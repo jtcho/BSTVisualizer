@@ -1,0 +1,441 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"backgroun",
+				"background-repeat"
+			],
+			[
+				"keyboard",
+				"KeyboardService"
+			],
+			[
+				"Keyboard",
+				"KeyboardService"
+			],
+			[
+				"prevent",
+				"preventDefault"
+			],
+			[
+				"background",
+				"background-position"
+			],
+			[
+				"repa",
+				"background-repeat"
+			],
+			[
+				"hNeue",
+				"hNeueMed"
+			],
+			[
+				"j",
+				"javascript"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 347.0,
+		"selected_items":
+		[
+			[
+				"package",
+				"Package Control: Remove Package"
+			],
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				":W",
+				":w - Save"
+			],
+			[
+				":",
+				":w - Save"
+			],
+			[
+				"Install ",
+				"Package Control: Install Package"
+			],
+			[
+				"Remove ",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control",
+				"Package Control: Install Package"
+			],
+			[
+				"Package install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control:",
+				"Package Control: Discover Packages"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Project",
+				"Project: Save As"
+			],
+			[
+				"Add",
+				"Project: Add Folder"
+			]
+		],
+		"width": 425.0
+	},
+	"console":
+	{
+		"height": 174.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/jtcho/Documents/Code/BSTVisualizer"
+	],
+	"file_history":
+	[
+		"/Users/jtcho/Documents/Code/jtcho/client/app/main/main.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/main/main.scss",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/portal/portal.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/portal/portal.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/portal/sidescroller/sidescroller.scss",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/app.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/project/project_template.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/navbar/navbar.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/services/keyboard.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/main/main.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/navbar/navbar.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/directives/stickyscroll.directive.js",
+		"/Users/jtcho/Documents/Code/jtcho/Gruntfile.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/app.scss",
+		"/Users/jtcho/Documents/Code/jtcho/client/index.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/portal/sidescroller_static/template.html",
+		"/Users/jtcho/Documents/Code/KPCBFellows/README.md",
+		"/Users/jtcho/Dropbox/Documents/Career/Resume/jtcho_resume.tex",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/main/main.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/assets/jtcho_resume.pdf",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/project/project.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/project/project.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/directives/project.directive.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/project/project_include.html",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/main/project.directive.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/directives/skillchart.directive.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/project.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho/client/components/navbar/skillchart.directive.js",
+		"/Users/jtcho/Documents/Code/jtcho_old/client/components/navbar/navbar.html",
+		"/Users/jtcho/Documents/Code/jtcho_old/client/index.html",
+		"/Users/jtcho/Documents/Code/jtcho_old/client/app/main/main.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho_old/client/components/navbar/navbar.controller.js",
+		"/Users/jtcho/Documents/Code/jtcho/bower.json",
+		"/Users/jtcho/Documents/Code/jtcho_old/bower.json",
+		"/Users/jtcho/Documents/Code/jtcho_old/client/app/main/main.scss",
+		"/Users/jtcho/Documents/Code/jtcho_old/client/components/modal/modal.service.js",
+		"/Users/jtcho/Documents/Code/jtcho/.gitignore",
+		"/Users/jtcho/Documents/Code/jtcho_old/.gitignore",
+		"/Users/jtcho/Documents/Code/jtcho/client/app/main/main.controller.spec.js",
+		"/Users/jtcho/.Trash/app/scripts/controllers/main.js",
+		"/Users/jtcho/Documents/Code/jtcho/package.json",
+		"/Users/jtcho/Downloads/opencv-2.4.9/README.md",
+		"/Volumes/STORAGE/Documents/CS121/HW4/edu/joncho/cis121/DequeResizing.java",
+		"/Users/jtcho/Documents/Code/NALDA/client/app/main/main.scss",
+		"/Users/jtcho/Documents/Code/NALDA/client/app/main/main.controller.js",
+		"/Users/jtcho/Documents/Code/NALDA/client/components/navbar/navbar.html",
+		"/Users/jtcho/Documents/Code/NALDA/client/components/navbar/navbar.controller.js",
+		"/Users/jtcho/Documents/Code/NALDA/client/app/main/main.html",
+		"/Users/jtcho/Documents/Code/NALDA/client/index.html",
+		"/Users/jtcho/Documents/Code/NALDA/client/app/main/main.js",
+		"/Users/jtcho/Documents/Code/NALDA/client/app/app.js",
+		"/Users/jtcho/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/jtcho/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/jtcho/Documents/Code/NALDA/client/app/main/main.controller.spec.js",
+		"/Users/jtcho/Documents/Code/NALDA/server/routes.js",
+		"/Users/jtcho/Documents/Code/NALDA/server/app.js",
+		"/Users/jtcho/Downloads/albinotonnina.com-master/app/styles/main.css",
+		"/Users/jtcho/Downloads/albinotonnina.com-master/app/styles/animation.css",
+		"/Users/jtcho/Documents/Code/NALDA/package.json",
+		"/Users/jtcho/Downloads/jtqueue.h",
+		"/Users/jtcho/Downloads/albinotonnina.com-master/app/index.html",
+		"/Users/jtcho/Downloads/11.GalileoLinux/Linux_PythonScript/Linux_PythonScript/Linux_PythonScript.ino",
+		"/Volumes/Dropbox/Dropbox/Documents/Code/Projects/chiptrackserver/public/index.html",
+		"/Users/jtcho/Downloads/memslab-1.0.21/untitled.py",
+		"/Users/jtcho/Downloads/memslab-1.0.21/imembase.c",
+		"/Users/jtcho/Documents/Library/Dropbox/Documents/Code/Python/projecteuler/pr1.py",
+		"/Users/jtcho/Documents/Library/Dropbox/Documents/Code/Python/my2.py",
+		"/Users/jtcho/Documents/Library/Dropbox/Documents/Code/Python/my1.py",
+		"/Users/jtcho/Documents/Library/Dropbox/Documents/Code/Python/ex3.py",
+		"/Users/jtcho/Documents/Library/Dropbox/Documents/Code/Python/my3.py",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Python/ex5.py",
+		"/C/Users/jtcho/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/jtcho/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Python/helloWorld.py",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Python/ex3.py",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Python/python.sublime-project",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/web_b/assets/style/main.sass",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/web_b/assets/style/main2.sass",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/web_b/assets/style/temp.css",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/tay disambiguation/assets/style/style.sass",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/tay disambiguation/index.html",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/web_b/assets/style/main.css",
+		"/C/Users/jtcho/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/web_b/index.html",
+		"/C/Users/jtcho/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/tay disambiguation/assets/style/disambiguation.sass",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/tay disambiguation/assets/img/nav.png",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/js practice/clickyBox.html",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/js practice/clickyBoxJS.js",
+		"/D/Files/Documents/Library/Dropbox/Documents/Code/Web/js practice/jspractice.sublime-project",
+		"/C/Users/jtcho/AppData/Roaming/Sublime Text 3/Packages/User/clickyBox.html"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"this",
+			"background",
+			"languages",
+			"nav",
+			"0",
+			"height: 0",
+			"nav",
+			"display: none",
+			"navbar",
+			"images",
+			"image",
+			"images",
+			"location",
+			".css",
+			"asset",
+			"usemin",
+			"grunt.expand",
+			"animate.css",
+			"ng-if",
+			"link",
+			"images",
+			"img",
+			"img {",
+			"about",
+			"333333",
+			"console.log",
+			"jtchoApp",
+			"nalda",
+			"html",
+			"htmlmin",
+			"bower",
+			"favicon",
+			"ani",
+			"event",
+			"src",
+			"ignored",
+			".row",
+			"1024",
+			"1040",
+			"height: 0",
+			".col-12",
+			"col-12",
+			"top: 0",
+			":after",
+			":before",
+			"padding-bottom",
+			"padding-top",
+			"600",
+			"list-style",
+			"twitter",
+			"linked",
+			"nav",
+			"header",
+			"row {",
+			"col-",
+			".logo",
+			"logo",
+			",",
+			"92px",
+			".row",
+			"indent"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"self",
+			"state",
+			", "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "bstvisualizer.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+		],
+		"width": 372.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 259.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

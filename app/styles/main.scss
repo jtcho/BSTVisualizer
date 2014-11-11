@@ -1,0 +1,15 @@
+// bower:scss
+@import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
+// endbower
+
+.link {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node {
+  cursor: move;
+  fill: #f00;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
