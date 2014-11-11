@@ -44,12 +44,13 @@ angular.module('bstvisualizerApp')
 	 * Function: createNewNode
 	 * -----------------------
 	 * Called when the user enters a value to be inserted in the tree.
+	 * Right now it just draws a random circle.
 	 */
 	$scope.createNewNode = function() {
 		console.log($scope.newNodeValue);
 		$scope.nodes.push(new NodeModel({
- 			x: Math.floor((Math.random() * GraphService.width)), 
- 			y: Math.floor((Math.random() * GraphService.height))
+ 			x: 30+Math.floor((Math.random() * (GraphService.width - 60))), 
+ 			y: 30+Math.floor((Math.random() * (GraphService.height - 60)))
  		}, 2));
 	};
 }]);

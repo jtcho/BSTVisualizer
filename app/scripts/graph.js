@@ -25,27 +25,23 @@
  	return Node;
  }])
  .service('GraphService', ['d3Service', function(d3Service, NodeModel) {
- 	this.width = 1000;
- 	this.height = 800;
+ 	this.width = 1920;
+ 	this.height = 1080;
  	this.radius = 30;
  	this.nodes = [];
 
  	var graph = this;
 
- 	//Mostly for testing.
- 	for (var i = 0; i < 0; i++) {
- 		this.nodes.push(new NodeModel({
- 			x: Math.floor((Math.random() * this.width)), 
- 			y: Math.floor((Math.random() * this.height))
- 		}, 2));
-	}
-
 	//Create our SVG drawing surface.
 	d3Service.d3().then(function(d3) {
-		var svg = d3.select('body').append('svg')
-					.attr('width', graph.width)
-					.attr('height', graph.height)
+		var svg = d3.select('.container').append('svg')
+					.attr('width', '100%')
+					.attr('viewBox', '0 0 ' + graph.width + ' ' + graph.height)
 					.attr('id', 'graph');
+		svg.append('rect')
+			.attr('width', '100%')
+			.attr('height', '100%')
+			.attr('id', 'graph_outline');
 	});
 
  }])
