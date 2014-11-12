@@ -27,8 +27,11 @@
 
     
     <!-- CONTENT -->
-    <div ui-view="navbar"></div>
-    <div ui-view="content"></div>
+    <div ui-view></div>
+
+    <div class="container text-center">
+    <div class="row_separator"></div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="footer text-center">
@@ -81,10 +84,10 @@
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
-          <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
           <script src="app/services/d3.js"></script>
           <script src="app/services/graph.js"></script>
+          <script src="app/unbalanced_tree/unbalanced.controller.js"></script>
           <script src="components/modal/modal.service.js"></script>
           <script src="components/navbar/navbar.controller.js"></script>
           <!-- endinjector -->

@@ -8,7 +8,6 @@
  * Presumes that node is not null.
  */
 var findParentNode = function(node, val) {
-	console.log(val);
 	if (val < node.val) {
 		if (node.left === '')
 			return node;
@@ -22,9 +21,21 @@ var findParentNode = function(node, val) {
 };
 
 /**
+ * Function: findNodeDepth
+ * ------------------------
+ */
+var findNodeDepth = function(node) {
+	if (! node.parentNode)
+		return 0;
+	return 1+findNodeDepth(node.parentNode);
+}
+
+/**
  * Function: drawNode
  * ------------------
  * Draws a given node type.
+ * If the given node is already drawn,
+ * redraws it.
  */
 var drawNode = function(node, val, gs) {
 	//DRAWING INSTRUCTIONS.
@@ -32,7 +43,14 @@ var drawNode = function(node, val, gs) {
 	var scalingFactor = node.radius/gs.radius;
 	var parentNode = node.parentNode;
 	var d3 = gs.d3;
-	var svg = gs.zoomLayer;
+
+	//Remove old node.
+	if (node.svg) {
+		node.svg.remove();
+	}
+
+	var svg = gs.zoomLayer.append('g');
+	node.svg = svg;
 
 	svg.append('circle')
 		.attr('cx', node.x)
@@ -50,6 +68,16 @@ var drawNode = function(node, val, gs) {
 	//Draw link to parent if any.
 	if (parentNode)
 		drawEdge(parentNode, node, gs);
+}
+
+/**
+ * Function: removeNode
+ * --------------------
+ * Removes a node from the canvas.
+ */
+var removeNode = function(node) {
+	if (node.svg)
+		node.svg.remove();
 }
 
 /**
@@ -101,7 +129,7 @@ var drawEdge = function(node1, node2, gs) {
  		this.radius = 0;
  		this.height = 0;
 		this.parentNode = '';
-
+		this.svg = '';
 
  		//If no root defined, create.
 		if (! gs.root) {
@@ -117,9 +145,8 @@ var drawEdge = function(node1, node2, gs) {
 			this.radius = this.parentNode.radius * 0.7;
 			this.y = this.parentNode.y + this.radius*3;
 
-			var xShift = this.radius*2;
-			if (this.parentNode === gs.root)
-				xShift *= 2;
+			//Exponential decay because drawing trees is hard.
+			var xShift = this.radius*2*(1+Math.exp(-1 * findNodeDepth(this)/8));
 
 			//Inserting on the left...
 			if (val < this.parentNode.val) {
@@ -145,6 +172,7 @@ var drawEdge = function(node1, node2, gs) {
  	this.height = 1080;
  	this.radius = 100;
  	this.nodes = [];
+ 	this.keys = [];
  	this.reg = /^[a-zA-Z]+$/;
  	this.root = '';
 
@@ -153,11 +181,25 @@ var drawEdge = function(node1, node2, gs) {
 
 	//D3 stuff.
 	d3Service.d3().then(function(d3) {
+		//Store d3 hook.
+		graph.d3 = d3;
+		//Initialize the canvas when d3 first loads.
+		graph.drawCanvas();
+	});
+
+	/**
+	 * Function: drawCanvas
+	 * --------------------
+	 * Creates the svg element and appends it to the page.
+	 * Also draws the overlay rect for catching mouse events.
+	 */
+	this.drawCanvas = function() {
+		var d3 = this.d3;
 		//Create canvas SVG
 		var svg = d3.select('#graph_container').append('svg')
 					.attr('width', '100%')
 					//scale viewbox to container
-					.attr('viewBox', '0 0 ' + graph.width + ' ' + graph.height)
+					.attr('viewBox', '0 0 ' + this.width + ' ' + this.height)
 					.attr('id', 'graph')
 					.append('g');
 		//Zoom behavior and scaling apply only to the above grouping.
@@ -165,17 +207,14 @@ var drawEdge = function(node1, node2, gs) {
 			svg.attr('transform', 'translate(' + d3.event.translate + ')'+' scale(' + d3.event.scale + ')');
 		}))
 		;
-		graph.zoomLayer = svg;
+		this.zoomLayer = svg;
 
 		// Draw overlay
 		svg.append('rect')
 			.attr('width', '100%')
 			.attr('height', '100%')
 			.attr('id', 'overlay');
-
-		//Store d3 hook.
-		graph.d3 = d3;
-	});
+	};
 
  }])
  ;

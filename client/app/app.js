@@ -11,7 +11,8 @@ angular.module('bstvisualizerApp', [
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $urlRouterProvider
-      .otherwise('/');
+      .when('/', '/unbalanced')
+      .otherwise('/unbalanced');
 
     $locationProvider.html5Mode(true);
   });
