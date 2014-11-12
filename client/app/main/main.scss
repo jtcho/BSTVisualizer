@@ -8,14 +8,14 @@ p {
 }
 
 .node {
-  cursor: move;
-  fill: #ff9595;
+  fill: #b3eeff;
   stroke: #000;
   stroke-width: 1.5px;
   animation: fadein 1s ease 1;
 }
 
 #overlay {
+  cursor: move;
   fill:none;
   pointer-events: all;
 }
