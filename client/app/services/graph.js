@@ -28,7 +28,8 @@ var findParentNode = function(node, val) {
  */
 var drawNode = function(node, val, gs) {
 	//DRAWING INSTRUCTIONS.
-	var scalingFactor = Math.sqrt(node.radius/gs.radius);
+	//Sqrt scalingFactor or no.
+	var scalingFactor = node.radius/gs.radius;
 	var parentNode = node.parentNode;
 	var d3 = gs.d3;
 	var svg = gs.zoomLayer;
@@ -41,7 +42,7 @@ var drawNode = function(node, val, gs) {
 		;
 	svg.append('text').text(val)
 		.attr('x', node.x)
-		.attr('y', (node.y + 17*scalingFactor))
+		.attr('y', node.y + 17 * scalingFactor)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50 * scalingFactor)
 		;
