@@ -94,6 +94,23 @@
 				.attr('font-size', 50 * scalingFactor)
 				// .attr('transform', function(d) { return 'translate(' + d + ')'; })
 				;
+			if (parentNode) {
+				var theta = Math.atan((node.y - parentNode.y)/(node.x - parentNode.x));
+				var nxOffset = node.radius * Math.cos(theta);
+				var nyOffset = node.radius * Math.sin(theta);
+				var xOffset = parentNode.radius * Math.cos(theta);
+				var yOffset = parentNode.radius * Math.sin(theta);
+				var dir = (parentNode.val <= node.val) ? 1 : -1;
+
+				svg.append('line')
+					.style('stroke', 'black')
+					.style('stroke-width', '3px')
+					.attr('x1', (parentNode.x + dir*xOffset))
+					.attr('y1', (parentNode.y + dir*yOffset))
+					.attr('x2', (node.x - dir*nxOffset))
+					.attr('y2', (node.y - dir*nyOffset))
+					;
+			}
 		});
  	};
 
@@ -114,7 +131,7 @@
 	//D3 stuff.
 	d3Service.d3().then(function(d3) {
 		//Create canvas SVG
-		var svg = d3.select('.container').append('svg')
+		var svg = d3.select('#graph_container').append('svg')
 					.attr('width', '100%')
 					//scale viewbox to container
 					.attr('viewBox', '0 0 ' + graph.width + ' ' + graph.height)

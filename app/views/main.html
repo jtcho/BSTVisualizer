@@ -1,15 +1,29 @@
-<div class="container">
+<div class="container text-center" id="graph_container">
 
   <div class="row">
-    <h1>Unbalanced Binary Search Tree</h1  >
+    <h1>Unbalanced Binary Search Tree</h1>
+
+    <br>
 
     <alert class="input_alert" type="warning" close="setInputAlert(false)">
       <strong>Error: </strong>Please enter a valid alphabetical string.
     </alert>
 
+    <div class="col-lg-2"></div>
+
+    <div class="col-lg-8">
+
+    <p style="font-size: 1.2em">
+    This visualization demonstrates how elements are added to an unbalanced binary search tree. Try adding various letters, particularly an in-order sequence, to observe the worst-case spatial complexity. (e.g. 'A, B, C, D...') What data structure does this resemble?
+    </p><br>
+
+    </div>
+
+    <div class="col-lg-2"></div>
+
     <form ng-submit="createNewNode()">
       <p class="form-group">
-        <input type="text" class="form-control" ng-model="newNodeValue" placeholder="Enter value for new node." />
+        <input type="text" class="form-control text-center" ng-model="newNodeValue" placeholder="Enter value for a new node." />
         <input type="submit" style="display: none;"/>
       </p>
     </form>

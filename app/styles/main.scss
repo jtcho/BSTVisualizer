@@ -29,4 +29,11 @@
   opacity: 0;
   -webkit-transition:all linear 0.5s;
   transition:all linear 0.5s;
+  position:absolute;
+  top:30px;
+  left: 50%;
+  width: 500px;
+  margin-left: -250px;
+  z-index: 100;
+  text-align: center;
 }

@@ -63,7 +63,7 @@ angular.module('bstvisualizerApp')
 		//Disable warning message.
 		this.setInputAlert(false);
 
-		var value = this.newNodeValue.substring(0, 4).toUpperCase();
+		var value = this.newNodeValue.substring(0, 1).toUpperCase();
 		var node = new NodeModel(value);
 		this.nodes.push(node);
  		this.newNodeValue = '';	//Reset input text.
@@ -76,7 +76,7 @@ angular.module('bstvisualizerApp')
 	 */
 	$scope.setInputAlert = function(state) {
 		if (state)
-			angular.element('.input_alert').css('opacity', '1.0');
+			angular.element('.input_alert').css('opacity', '0.9');
 		else
 			angular.element('.input_alert').css('opacity', '0');
 	};
