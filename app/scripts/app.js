@@ -16,6 +16,7 @@ angular
     'ngSanitize',
     'ngTouch',
     'ui.router',
+    'ui.bootstrap',
     'graph',
     'd3'
   ])

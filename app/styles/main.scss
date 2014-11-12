@@ -9,19 +9,24 @@
 
 .node {
   cursor: move;
-  fill: #f00;
+  fill: #ff9595;
   stroke: #000;
   stroke-width: 1.5px;
   animation: fadein 1s ease 1;
 }
 
-#graph_outline {
-  stroke-width: 10px;
-  stroke: #000;
-  fill: #fff;
+#overlay {
+  fill:none;
+  pointer-events: all;
 }
 
 @keyframes fadein {
   0% { opacity: 0;  }
   100% { opacity: 1; }
+}
+
+.input_alert {
+  opacity: 0;
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
 }

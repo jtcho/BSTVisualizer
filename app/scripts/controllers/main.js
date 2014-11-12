@@ -37,8 +37,14 @@ angular.module('bstvisualizerApp')
 })
 //Main controller.
 .controller('MainCtrl', ['$scope',  'NodeModel', 'GraphService', function ($scope, NodeModel, GraphService) {
-	//Link to the service.
-	$scope.nodes = GraphService.nodes;
+
+	//Access variables from service.
+	var gs = GraphService;
+	$scope.nodes = gs.nodes;
+	$scope.newNodeValue = '';
+	$scope.inputAlertActive = false;
+	var nodeRadius = gs.radius;
+	var reg = gs.reg;
 
 	/**
 	 * Function: createNewNode
@@ -47,10 +53,31 @@ angular.module('bstvisualizerApp')
 	 * Right now it just draws a random circle.
 	 */
 	$scope.createNewNode = function() {
-		console.log($scope.newNodeValue);
-		$scope.nodes.push(new NodeModel({
- 			x: 30+Math.floor((Math.random() * (GraphService.width - 60))), 
- 			y: 30+Math.floor((Math.random() * (GraphService.height - 60)))
- 		}, 2));
+		//Check if input text is valid..
+		if (! reg.test(this.newNodeValue)) {
+			this.newNodeValue = '';
+			this.setInputAlert(true);
+			return;
+		}
+
+		//Disable warning message.
+		this.setInputAlert(false);
+
+		var value = this.newNodeValue.substring(0, 4).toUpperCase();
+		var node = new NodeModel(value);
+		this.nodes.push(node);
+ 		this.newNodeValue = '';	//Reset input text.
+	};
+
+	/**
+	 * Function: setInputAlert
+	 * -----------------------
+	 * Set the invalid input alert toggle.
+	 */
+	$scope.setInputAlert = function(state) {
+		if (state)
+			angular.element('.input_alert').css('opacity', '1.0');
+		else
+			angular.element('.input_alert').css('opacity', '0');
 	};
 }]);
