@@ -2,12 +2,13 @@
 
 /**
  * D3 service for injection!
+ * Loads the D3 js directly from the official server,
+ * and returns the d3 object as a promise.
  */
 angular.module('d3', [])
 .factory('d3Service', ['$document', '$q', '$rootScope',
 	function($document, $q, $rootScope) {
-		console.log('Starting d3 factory.');
-
+		
 		var d = $q.defer();
 
 		function onScriptLoad() {
