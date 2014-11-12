@@ -2,6 +2,10 @@
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+p {
+  font-size: 1.2em;
+}
+
 .link {
   stroke: #000;
   stroke-width: 1.5px;
@@ -37,3 +41,19 @@
   z-index: 100;
   text-align: center;
 }
+
+.footer_badge {
+  width: 40px;
+  height: 40px;
+  opacity: 0.7;
+  margin: 0 10px;
+}
+
+.footer_badge:hover {
+  opacity:0.9;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
