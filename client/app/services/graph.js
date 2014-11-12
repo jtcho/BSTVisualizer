@@ -41,8 +41,7 @@ var drawNode = function(node, val, gs) {
 		;
 	svg.append('text').text(val)
 		.attr('x', node.x)
-		.attr('y', node.y)
-		.attr('baseline-shift', (-17 * scalingFactor)+'px')
+		.attr('y', (node.y + 17*scalingFactor))
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50 * scalingFactor)
 		;
@@ -55,6 +54,7 @@ var drawNode = function(node, val, gs) {
 /**
  * Function: drawEdge
  * ------------------
+ * Draws an edge between two nodes.
  */
 var drawEdge = function(node1, node2, gs) {
 	var svg = gs.zoomLayer;
@@ -81,7 +81,7 @@ var drawEdge = function(node1, node2, gs) {
  * Dependency for main app.
  */
  angular.module('graph', ['d3'])
- .factory('NodeModel', ['d3Service', 'GraphService', function(d3Service, GraphService) {
+ .factory('NodeModel', ['GraphService', function(GraphService) {
 
  	/**
  	 * Instantiates a Node object with a given value.
@@ -133,7 +133,7 @@ var drawEdge = function(node1, node2, gs) {
 		}
 
 		//Draw the node.
-		drawNode(this, val, gs, d3Service);
+		drawNode(this, val, gs, gs.d3);
  	};
 
  	return Node;
