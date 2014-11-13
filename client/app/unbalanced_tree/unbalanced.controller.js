@@ -1,27 +1,8 @@
 'use strict';
 
-/**
- * Function: clearNodes
- * --------------------
- * Purges all nodes from the graph
- * and clears the screen.
- */
-var clearAll = function(gs) {
-	//Remove pre-existing elements, if any.
-	for (var i = 0; i < gs.nodes.length; i++)
-		removeNode(gs.nodes[i]);
-	gs.nodes = [];
-	gs.keys = [];
-	gs.root = '';
-	if (gs.d3)
-		//Remove all edges.
-		gs.d3.selectAll('line').remove();
-}
-
 angular.module('bstvisualizerApp')
 //Main controller.
-.controller('UnbalancedCtrl', ['$scope',  'NodeModel', 'GraphService', function ($scope, NodeModel, GraphService) {
-
+.controller('UnbalancedCtrl', ['$scope', 'GraphService', function ($scope, GraphService) {
 	//SERVICE HOOKS
 	var gs = GraphService;
 	//Draw the canvas if possible.
@@ -69,7 +50,36 @@ angular.module('bstvisualizerApp')
 			return;
 		}
 
-		var node = new NodeModel(value);
+		var node = '';
+
+		if (! gs.root) {
+			node = new Node(gs.width / 2, 200, value);
+			node.radius = gs.radius;
+			gs.root = node;
+		}
+		else {
+			node = new Node(0, 0, value);
+			node.parentNode = findParentNode(gs.root, value);
+			node.radius = node.parentNode.radius * 0.7;
+			node.y = node.parentNode.y + node.radius*3;
+
+			//Exponential decay because drawing trees is hard.
+			var xShift = node.radius*2*(1+Math.exp(-1 * node.depth()/8));
+			//Inserting on the left...
+			if (node.val < node.parentNode.val) {
+				node.parentNode.left = node;
+				node.x = node.parentNode.x - xShift;
+			}
+			else {
+				node.parentNode.right = node;
+				node.x = node.parentNode.x + xShift;
+			}
+		}
+
+		node.draw(gs);
+		if (node.parentNode)
+			node.drawEdge(node.parentNode, gs);
+
 		gs.nodes.push(node);
 		gs.keys.push(value);
  		this.newNodeValue = '';	//Reset input text.
