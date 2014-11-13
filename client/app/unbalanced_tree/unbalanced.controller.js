@@ -50,33 +50,9 @@ angular.module('bstvisualizerApp')
 			return;
 		}
 
-		var node = '';
-
-		if (! gs.root) {
-			node = new Node(gs.width / 2, 200, value);
-			node.radius = gs.radius;
-			gs.root = node;
-		}
-		else {
-			node = new Node(0, 0, value);
-			node.parentNode = findParentNode(gs.root, value);
-			node.radius = node.parentNode.radius * 0.7;
-			node.y = node.parentNode.y + node.radius*3;
-
-			//Exponential decay because drawing trees is hard.
-			var xShift = node.radius*2*(1+Math.exp(-1 * node.depth()/8));
-			//Inserting on the left...
-			if (node.val < node.parentNode.val) {
-				node.parentNode.left = node;
-				node.x = node.parentNode.x - xShift;
-			}
-			else {
-				node.parentNode.right = node;
-				node.x = node.parentNode.x + xShift;
-			}
-		}
-
+		var node = new UNode(value, gs);
 		node.draw(gs);
+
 		if (node.parentNode)
 			node.drawEdge(node.parentNode, gs);
 

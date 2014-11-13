@@ -1,23 +1,21 @@
 'use strict';
 
 /**
- * Object: Node
+ * Type: Node
  * ------------
- * Defines a Node object, an arbitrary
+ * Defines an abstract Node object, an arbitrary
  * element in a tree.
  */
-var Node = function(x, y, val) {
+var Node = function(val, gs) {
 
-	this.x = x;
-	this.y = y;
 	this.val = val;
 	this.left = '';
 	this.right = '';
-	this.parentNode = '';
 
-	this.radius = '';
+	this.x = 0;
+	this.y = 0;
+	this.radius = 0;
 	this.svg = '';
-
 };
 
 /**
