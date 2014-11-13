@@ -6,7 +6,7 @@
  * Defines an abstract Node object, an arbitrary
  * element in a tree.
  */
-var Node = function(val, gs) {
+var Node = function(val) {
 
 	this.val = val;
 	this.left = '';
@@ -16,7 +16,33 @@ var Node = function(val, gs) {
 	this.y = 0;
 	this.radius = 0;
 	this.svg = '';
+
 };
+
+Node.prototype.init = function(gs) {
+	if (! gs.root) {
+		this.x = gs.width / 2;
+		this.y = 200;
+		this.parentNode = '';
+		this.radius = gs.radius;
+		gs.root = this;
+	}
+	else {
+		this.parentNode = findParentNode(gs.root, this.val);
+		this.radius = this.parentNode.radius * 0.7;
+		this.y = this.parentNode.y + this.radius*3;
+
+		var xShift = this.radius*2*(1+Math.exp(-1 * this.depth()/8));
+		if (this.val < this.parentNode.val) {
+			this.parentNode.left = this;
+			this.x = this.parentNode.x - xShift;
+		}
+		else {
+			this.parentNode.right = this;
+			this.x = this.parentNode.x + xShift;
+		}
+	}
+}
 
 /**
  * Function: depth
@@ -30,15 +56,50 @@ Node.prototype.depth = function() {
 };
 
 /**
- * Function: height
- * ----------------
- * Find the height of the subtree that this
- * Node is root of.
+ * Function: translate
+ * -------------------
+ * Translates ONLY this node and animates.
  */
-Node.prototype.height = function() {
-	var leftHeight = (this.left) ? this.left.height() : 0;
-	var rightHeight = (this.right) ? this.right.height() : 0;
-	return Math.max(1 + leftHeight, 1 + rightHeight);
+Node.prototype.translate = function(dx, dy) {
+	//
+	var transformString = 'translate(' + dx + ' ' + dy + ')';
+	this.svg
+	.transition()
+	.duration(2000)
+	.attr('transform', transformString);
+
+	this.x += dx;
+	this.y += dy;
+};
+
+/**
+ * Function: translate
+ * -------------------
+ * Translates this node to the new position.
+ */
+Node.prototype.translateTo = function(xp, yp) {
+	//
+	this.translate(xp - this.x, yp - this.y);
+};
+
+/**
+ * Function: visit
+ * ---------------
+ * 'Visits' the node, marking it visually.
+ */
+Node.prototype.visit = function() {
+	this.svg.select('circle')
+		.attr('class', 'visited node');
+};
+
+/**
+ * Function: unvisit
+ * -----------------
+ * 'Unvisits' the node, removing the marking.
+ */
+Node.prototype.unvisit = function() {
+	this.svg.select('circle')
+		.attr('class', 'node');
 };
 
 /**
@@ -69,9 +130,6 @@ Node.prototype.draw = function(gs) {
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50 * scalingFactor)
 		;
-
-	//Draw link to parent if any.
-
 };
 
 /**
@@ -113,25 +171,93 @@ Node.prototype.drawEdge = function(node, gs) {
 
 
 /**
- * Function: clearNodes
- * --------------------
- * Purges all nodes from the graph
- * and clears the screen.
+ * Type: ANode
+ * -----------
+ * Defines a self-balancing AVL Tree node.
  */
-var clearAll = function(gs) {
-	//Remove pre-existing elements, if any.
-	for (var i = 0; i < gs.nodes.length; i++)
-		gs.nodes[i].removeNode();
-	gs.nodes = [];
-	gs.keys = [];
-	gs.root = '';
-	if (gs.d3)
-		//Remove all edges.
-		gs.d3.selectAll('line').remove();
+ var ANode = function(val, gs) {
+ 	Node.call(this, val);
+ 	this.init(gs, val);
+ };
+
+ANode.prototype = new Node();
+
+ANode.prototype.init = function(gs, val) {
+	if (! gs.root) {
+		this.x = gs.width / 2;
+		this.y = 200;
+		this.parentNode = '';
+		this.radius = gs.radius;
+		gs.root = this;
+	}
+	//Handle coordinate calculations here...
+	else {
+		this.parentNode = findParentNode(gs.root, this.val);
+		this.radius = this.parentNode.radius * 0.7;
+		this.y = this.parentNode.y + this.radius*3;
+
+		var xShift = this.radius*2*(1+Math.exp(-1 * this.depth()/8));
+		if (this.val < this.parentNode.val) {
+			this.x = this.parentNode.x - xShift;
+		}
+		else {
+			this.x = this.parentNode.x + xShift;
+		}
+
+ 		this.insert(gs.root, val);
+	}
 }
 
+/**
+ * Function: insert
+ * ----------------
+ * Insert this node into the given root's subtree.
+ * Also rebalances the tree as necessary.
+ */
+ANode.prototype.insert = function(node, val) {
+	if (val < node.val) {
+		//If the left node is not null, recurse.
+		if (node.left)
+			this.insert(node.left, val);
+		//Otherwise, insert.
+		else
+			node.left = this;
+		//Check heights.
+		if (height(node.left) - height(node.right) == 2) {
+			console.log('Imbalance found at node of value: ' + node.val);
+			if (val < node.left.val) {
+				console.log('Left left case.');
+			}
+		}
+	}
+	else {
+		//If the right node is null, insert.
+		if (node.right)
+			this.insert(node.right, val);
+		else
+			node.right = this;
+		//Check heights.
+		if (height(node.right) - height(node.left) == 2) {
+			console.log('Imbalance found at node of value: ' + node.val);
+			if (val > node.right.val) {
+				console.log('Right right case.');
+			}
+		}
+	}
+}
 
+/**
+ * Type: UNode
+ * ------------
+ * Defines an unbalanced Binary Search Tree node.
+ */
+var UNode = function(val, gs) {
 
+	Node.call(this, val);
+	this.init(gs);
+};
+
+UNode.prototype = new Node();
 
 
 

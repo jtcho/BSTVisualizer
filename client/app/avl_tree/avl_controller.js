@@ -1,11 +1,12 @@
 'use strict';
 
+//
+
 angular.module('bstvisualizerApp')
-.controller('UnbalancedCtrl', ['$scope', 'GraphService', function ($scope, GraphService) {
-	//SERVICE HOOKS
+.controller('AVLCtrl', ['$scope', 'GraphService', function($scope, GraphService) {
+
 	var gs = GraphService;
-	//Draw the canvas if possible.
-	//Used for transitioning to this state once d3 has loaded globally.
+
 	if (gs.d3)
 		gs.drawCanvas();
 
@@ -18,14 +19,11 @@ angular.module('bstvisualizerApp')
 	var nodeRadius = gs.radius;
 	var reg = gs.reg;
 
-	/**
-	 * Function: createNewNode
-	 * -----------------------
-	 * Called when the user enters a value to be inserted in the tree.
-	 * Right now it just draws a random circle.
-	 */
+
 	$scope.createNewNode = function() {
-		//Check if input text is valid..
+		console.log('Creating new AVL Node.');
+
+		//Check for valid input text.
 		if (! reg.test(this.newNodeValue)) {
 			this.newNodeValue = '';
 			this.setInputAlert(true);
@@ -39,32 +37,23 @@ angular.module('bstvisualizerApp')
 			return;
 		}
 
-		//Disable warning message.
+		//
 		this.setInputAlert(false);
-		//Create the new node.
+		//
 		var value = this.newNodeValue.substring(0, 1).toUpperCase();
 
 		if (gs.keys.indexOf(value) > -1) {
-			this.newNodeValue = '';
+			this.newNodeValue ='';
 			return;
 		}
 
-		var node = new UNode(value, gs);
-		var x = node.x;
-		var y = node.y;
-		node.x = Math.random() * gs.width;
-		node.y = Math.random() * gs.height;
+		var node = new ANode(value, gs);
 		node.draw(gs);
-
-		node.translateTo(x, y);
-
-		if (node.parentNode)
-			node.drawEdge(node.parentNode, gs);
 
 		gs.nodes.push(node);
 		gs.keys.push(value);
- 		this.newNodeValue = '';	//Reset input text.
-	};
+		this.newNodeValue = '';
+	}
 
 	/**
 	 * Function: setInputAlert
@@ -77,4 +66,5 @@ angular.module('bstvisualizerApp')
 		else
 			angular.element('.input_alert').css('opacity', '0');
 	};
+
 }]);

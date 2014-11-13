@@ -21,6 +21,35 @@ var findParentNode = function(node, val) {
 };
 
 /**
+ * Function: height
+ * ----------------
+ * Finds the height of the given node.
+ */
+ var height = function(node) {
+ 	if (! node)
+ 		return 0;
+ 	return Math.max(1 + height(node.left), 1 + height(node.right));
+ }
+
+/**
+ * Function: clearNodes
+ * --------------------
+ * Purges all nodes from the graph
+ * and clears the screen.
+ */
+var clearAll = function(gs) {
+	//Remove pre-existing elements, if any.
+	for (var i = 0; i < gs.nodes.length; i++)
+		gs.nodes[i].removeNode();
+	gs.nodes = [];
+	gs.keys = [];
+	gs.root = '';
+	if (gs.d3)
+		//Remove all edges.
+		gs.d3.selectAll('line').remove();
+};
+
+/**
  * Graph Module
  * Dependency for main app.
  */

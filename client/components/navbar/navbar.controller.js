@@ -10,6 +10,10 @@ angular.module('bstvisualizerApp')
 		{
 			'title': 'unbalanced bst',
 			'slink': 'main.load.unbalanced'
+		},
+		{
+			'title': 'avl bst',
+			'slink': 'main.load.avl'
 		}
 	];
 

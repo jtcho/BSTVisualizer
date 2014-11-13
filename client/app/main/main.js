@@ -38,6 +38,11 @@ angular.module('bstvisualizerApp')
 		templateUrl: 'app/unbalanced_tree/unbalancedTree.html',
 		controller: 'UnbalancedCtrl'
 	})
+	.state('main.load.avl', {
+		url: 'avl',
+		templateUrl: 'app/avl_tree/avlTree.html',
+		controller: 'AVLCtrl'
+	})
 	;
 })
 ;

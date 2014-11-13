@@ -7,19 +7,23 @@ p {
   stroke-width: 3px;
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;
-  animation-name: fadein, dash;
-  animation-duration: 1s, 2s;
-  animation-timing-function: ease, linear;
-  animation-delay: 0s, 0s;
-  animation-iteration-count: 1, 1;
-  animation-fill-mode: forwards, forwards;
+  opacity: 0;
+  animation: dash 2s ease 2s 1 forwards;
+}
+
+.node.visited {
+  stroke: #f9e470;
+  stroke-width: 3px;
+  animation: fadein 1s ease 1;
 }
 
 @keyframes dash {
   from {
+    opacity: 1;
     stroke-dashoffset: 1000;
   }
   to {
+    opacity: 1;
     stroke-dashoffset: 0;
   }
 }
@@ -39,6 +43,7 @@ p {
 
 @keyframes fadein {
   0% { opacity: 0;  }
+  50% { opacity: 0; }
   100% { opacity: 1; }
 }
 
