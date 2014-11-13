@@ -20,16 +20,17 @@ var Node = function(val) {
 };
 
 Node.prototype.init = function(gs) {
+
+	this.radius = gs.radius;
 	if (! gs.root) {
 		this.x = gs.width / 2;
 		this.y = 200;
 		this.parentNode = '';
-		this.radius = gs.radius;
 		gs.root = this;
 	}
 	else {
 		this.parentNode = findParentNode(gs.root, this.val);
-		this.radius = this.parentNode.radius * 0.7;
+		//this.radius = this.parentNode.radius * 0.7;
 		this.y = this.parentNode.y + this.radius*3;
 
 		var xShift = this.radius*2*(1+Math.exp(-1 * this.depth()/8));
@@ -126,7 +127,7 @@ Node.prototype.draw = function(gs) {
 		;
 	svg.append('text').text(this.val)
 		.attr('x', this.x)
-		.attr('y', this.y + 17 * scalingFactor)
+		.attr('y', this.y + 15 * scalingFactor)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50 * scalingFactor)
 		;
@@ -169,6 +170,14 @@ Node.prototype.drawEdge = function(node, gs) {
  	}
  };
 
+/**
+ * Function: isLeaf
+ * ----------------
+ * Returns whether this node is a leaf node.
+ */
+ Node.prototype.isLeaf = function() {
+ 	return !(this.left || this.right);
+ };
 
 /**
  * Type: ANode

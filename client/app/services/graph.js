@@ -50,6 +50,29 @@ var clearAll = function(gs) {
 };
 
 /**
+ *
+ */
+var fixTree = function(root, gs) {
+	//Base Case 1
+	if(! root)
+		return;
+	//Base Case 2
+	if (root.isLeaf()) {
+		//Draw.
+	}
+	else {
+		//Recursive call on the left, right subtrees.
+		fixTree(root.left, gs);
+		fixTree(root.right, gs);
+
+		//Move both subtrees a sufficient distance apart.
+
+		//Place this node's x value halfway between left/right,
+		//or one unit between itself and child.
+	}
+}
+
+/**
  * Graph Module
  * Dependency for main app.
  */
@@ -83,25 +106,32 @@ var clearAll = function(gs) {
 	 */
 	this.drawCanvas = function() {
 		var d3 = this.d3;
+		var graph = this;
 		//Create canvas SVG
 		var svg = d3.select('#graph_container').append('svg')
 					.attr('width', '100%')
 					//scale viewbox to container
 					.attr('viewBox', '0 0 ' + this.width + ' ' + this.height)
 					.attr('id', 'graph')
-					.append('g');
+					.append('g')
+					;
 		//Zoom behavior and scaling apply only to the above grouping.
-		svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on('zoom', function() {
-			svg.attr('transform', 'translate(' + d3.event.translate + ')'+' scale(' + d3.event.scale + ')');
+		svg.call(d3.behavior.zoom()
+			.scaleExtent([0.25, 8])
+			.on('zoom', function() {
+			graph.zoomLayer.attr('transform', 'translate(' + d3.event.translate + ')'+' scale(' + d3.event.scale + ')');
 		}))
 		;
-		this.zoomLayer = svg;
+
+		this.zoomLayer = svg.append('g');
 
 		// Draw overlay
-		svg.append('rect')
+		var zoomRect = svg.append('rect')
 			.attr('width', '100%')
 			.attr('height', '100%')
-			.attr('id', 'overlay');
+			.attr('id', 'overlay')
+			;
+
 	};
 
  }])
