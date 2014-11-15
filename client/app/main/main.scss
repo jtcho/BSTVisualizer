@@ -8,7 +8,7 @@ p {
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;
   opacity: 0;
-  animation: dash 2s ease 2s 1 forwards;
+  animation: dash 2s ease 1s 1 forwards;
 }
 
 .node.visited {

@@ -50,16 +50,13 @@ angular.module('bstvisualizerApp')
 		}
 
 		var node = new UNode(value, gs);
-		var x = node.x;
-		var y = node.y;
-		node.x = Math.random() * gs.width;
-		node.y = Math.random() * gs.height;
+		node.posX = Math.random() * gs.width;
+		node.posY = Math.random() * gs.height;
 		node.draw(gs);
 
-		node.translateTo(x, y);
+		console.log('Added node with val: '+ value);
 
-		if (node.parentNode)
-			node.drawEdge(node.parentNode, gs);
+		fixTree(gs.root, gs);
 
 		gs.nodes.push(node);
 		gs.keys.push(value);

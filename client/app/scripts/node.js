@@ -7,15 +7,21 @@
  * element in a tree.
  */
 var Node = function(val) {
-
+	//Logic Parameters
 	this.val = val;
 	this.left = '';
 	this.right = '';
+	this.label = '';
 
-	this.x = 0;
-	this.y = 0;
-	this.radius = 0;
-	this.svg = '';
+	//Drawing Parameters
+	this.X = 0;		//x index
+	this.Y = 0; 	//depth
+	this.mod = 0;	//amount to shift this node and its subtree
+	this.posX = 0;	//x position coordinate
+	this.posY = 0;	//y position coordinate
+	this.radius = 0;//radius of node
+	this.svg = '';	//correspondent svg group
+	this.edges = [];//drawn edges 
 
 };
 
@@ -23,24 +29,23 @@ Node.prototype.init = function(gs) {
 
 	this.radius = gs.radius;
 	if (! gs.root) {
-		this.x = gs.width / 2;
-		this.y = 200;
+		this.posX = gs.width / 2;
+		this.posY = 200;
 		this.parentNode = '';
 		gs.root = this;
 	}
 	else {
 		this.parentNode = findParentNode(gs.root, this.val);
-		//this.radius = this.parentNode.radius * 0.7;
-		this.y = this.parentNode.y + this.radius*3;
+		this.posY = this.parentNode.posY + this.radius*3;
 
 		var xShift = this.radius*2*(1+Math.exp(-1 * this.depth()/8));
 		if (this.val < this.parentNode.val) {
 			this.parentNode.left = this;
-			this.x = this.parentNode.x - xShift;
+			this.posX = this.parentNode.posX - xShift;
 		}
 		else {
 			this.parentNode.right = this;
-			this.x = this.parentNode.x + xShift;
+			this.posX = this.parentNode.posX + xShift;
 		}
 	}
 }
@@ -69,8 +74,8 @@ Node.prototype.translate = function(dx, dy) {
 	.duration(2000)
 	.attr('transform', transformString);
 
-	this.x += dx;
-	this.y += dy;
+	this.posX += dx;
+	this.posY += dy;
 };
 
 /**
@@ -80,7 +85,7 @@ Node.prototype.translate = function(dx, dy) {
  */
 Node.prototype.translateTo = function(xp, yp) {
 	//
-	this.translate(xp - this.x, yp - this.y);
+	this.translate(xp - this.posX, yp - this.posY);
 };
 
 /**
@@ -120,16 +125,23 @@ Node.prototype.draw = function(gs) {
 	this.svg = svg;
 
 	svg.append('circle')
-		.attr('cx', this.x)
-		.attr('cy', this.y)
+		.attr('cx', this.posX)
+		.attr('cy', this.posY)
 		.attr('r', this.radius)
 		.attr('class', 'node')
 		;
 	svg.append('text').text(this.val)
-		.attr('x', this.x)
-		.attr('y', this.y + 15 * scalingFactor)
+		.attr('x', this.posX)
+		.attr('y', this.posY + 15 * scalingFactor)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50 * scalingFactor)
+		;
+	svg.append('text').text(this.label)
+		.attr('id', 'label')
+		.attr('x', this.posX)
+		.attr('y', this.posY + 50 * scalingFactor)
+		.attr('text-anchor', 'middle')
+		.attr('font-size', 30)
 		;
 };
 
@@ -142,21 +154,34 @@ Node.prototype.draw = function(gs) {
 Node.prototype.drawEdge = function(node, gs) {
 	var svg = gs.zoomLayer;
 
-	var theta = Math.atan((node.y - this.y)/(node.x - this.x));
+	var theta = (node.X === this.X) ? 1.57 : Math.atan((node.posY - this.posY)/(node.posX - this.posX));
+
 	var xo2 = node.radius * Math.cos(theta);
 	var yo2 = node.radius * Math.sin(theta);
 	var xo1 = this.radius * Math.cos(theta);
 	var yo1 = this.radius * Math.sin(theta);
 	var dir = (this.val <= node.val) ? 1 : -1;
 
-	svg.append('line')
+	var edge = svg.append('line')
 		.attr('class', 'link')
-		.attr('x1', this.x + dir*xo1)
-		.attr('y1', this.y + dir*yo1)
-		.attr('x2', node.x - dir*xo2)
-		.attr('y2', node.y - dir*yo2)
+		.attr('x1', this.posX + dir*xo1)
+		.attr('y1', this.posY + dir*yo1)
+		.attr('x2', node.posX - dir*xo2)
+		.attr('y2', node.posY - dir*yo2)
 	;
+
+	this.edges.push(edge);
 };
+
+/**
+ *
+ */
+Node.prototype.clearEdges = function() {
+	for (var i = 0; i < this.edges.length; i++) {
+		this.edges[i].remove();
+	}
+};
+
 
 /**
  * Function: removeNode
@@ -180,6 +205,23 @@ Node.prototype.drawEdge = function(node, gs) {
  };
 
 /**
+ * Function: isLeftMost
+ * --------------------
+ * Returns whether this node is a leftmost child node.
+ */
+ Node.prototype.isLeftMost = function() {
+ 	return (! this.parentNode) || (! this.parentNode.left) || this.parentNode.left === this;
+ };
+
+/**
+ * Function: getLeftSibling
+ * ------------------------	
+ */
+ Node.prototype.getLeftSibling = function() {
+ 	return this.parentNode.left;
+ };
+
+/**
  * Type: ANode
  * -----------
  * Defines a self-balancing AVL Tree node.
@@ -193,8 +235,8 @@ ANode.prototype = new Node();
 
 ANode.prototype.init = function(gs, val) {
 	if (! gs.root) {
-		this.x = gs.width / 2;
-		this.y = 200;
+		this.posX = gs.width / 2;
+		this.posY = 200;
 		this.parentNode = '';
 		this.radius = gs.radius;
 		gs.root = this;
@@ -203,14 +245,14 @@ ANode.prototype.init = function(gs, val) {
 	else {
 		this.parentNode = findParentNode(gs.root, this.val);
 		this.radius = this.parentNode.radius * 0.7;
-		this.y = this.parentNode.y + this.radius*3;
+		this.posY = this.parentNode.posY + this.radius*3;
 
 		var xShift = this.radius*2*(1+Math.exp(-1 * this.depth()/8));
 		if (this.val < this.parentNode.val) {
-			this.x = this.parentNode.x - xShift;
+			this.posX = this.parentNode.posX - xShift;
 		}
 		else {
-			this.x = this.parentNode.x + xShift;
+			this.posX = this.parentNode.posX + xShift;
 		}
 
  		this.insert(gs.root, val);

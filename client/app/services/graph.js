@@ -50,27 +50,213 @@ var clearAll = function(gs) {
 };
 
 /**
- *
+ * Function: determineInitialX
+ * --------------------------
+ */
+var determineInitialX = function(root) {
+	if (root) {
+		determineInitialX(root.left);
+		determineInitialX(root.right);
+
+		if (! root.isLeftMost()) {
+			console.log('Val is not left most. ' + root.val + ', ' + root.getLeftSibling().val);
+			root.X = root.getLeftSibling().X;
+			root.mod = 0;
+			// root.X = root.parentNode.X +
+		}
+		else
+			root.X = 0;
+		root.svg.select('#label').text(root.X);
+	}
+};
+
+/**
+ * Function: positionChildren
+ * --------------------------
+ */
+var positionChildren = function(node) {
+	if (node) {
+		if (node.isLeaf()) {
+			if (! node.isLeftMost()) {
+				node.X = node.getLeftSibling().X + 1;
+			}
+			else {
+				node.X = 0;
+			}
+		}
+		else {
+			positionChildren(node.left);
+			positionChildren(node.right);
+
+			var mid = 0;
+
+			//Only right node, shift right subtree by 1.
+			if (! node.left) {
+				node.X = node.right.X;
+				// if (node.right.isLeaf()) {
+					addMods(node.right, 0.5);
+				// }
+				// console.log('First addMods for node: ' + node.val);
+				// addMods(node.right, 0.5);
+				// node.right.X += 1;
+			}
+			//Only left node.
+			else if (! node.right) {
+				console.log('Only left node, left has: ' +  node.left.X);
+				mid = node.left.X + 1;
+			}
+			//Both nodes.
+			else {
+				mid = (node.left.X + node.right.X) / 2;
+			}
+
+			if (! node.isLeftMost()) {
+				node.X = node.getLeftSibling().X + mid + 1;
+				node.mod += node.X - mid;
+			}
+			else
+				node.X = mid;
+		}
+	}
+};
+
+/**
+ * Function: addMods
+ * --------------------------
+ * Applies the root's mod transform on the subtree.
+ */
+var addMods = function(root, modSum) {
+	if (root) {
+		root.X += modSum;
+		addMods(root.left, modSum + root.mod);
+		addMods(root.right, modSum + root.mod);
+		root.mod = 0;
+	}
+};
+
+/**
+ * Function: getLeftContour
+ * -------------------------
+ * Returns a list of the X values of the 
+ * left-most nodes at each height level of the tree.
+ */
+var getLeftContour = function(node, contour, level) {
+	if (node) {
+		// console.log('Visiting Contour: ' + node.val + ', X: ' + node.X);
+		if (! contour)
+			contour = [node.X];
+		else if (contour.length < level + 1) 
+			contour.push(node.X);
+		else if (node.X < contour[level])
+			contour[level] = node.X;
+
+		contour = getLeftContour(node.left, contour, level+1);
+		contour = getLeftContour(node.right, contour, level+1);
+	}
+	return contour;
+}
+
+/**
+ * Function: getRightContour
+ * -------------------------
+ * Returns a list of the X values of the 
+ * right-most nodes at each height level of the tree.
+ */
+var getRightContour = function(node, contour, level) {
+	if (node) {
+		if (! contour)
+			contour = [node.X];
+		else if (contour.length < level + 1) 
+			contour.push(node.X);
+		else if (node.X > contour[level])
+			contour[level] = node.X;
+
+		contour = getRightContour(node.left, contour, level+1);
+		contour = getRightContour(node.right, contour, level+1);
+	}
+	return contour;
+}
+
+/**
+ * Function: fixTree
+ * -----------------
+ * Re-draws the tree to satisfy certain aesthetic conditions.
+ * Uses a less efficient implementation of the Reingold-Tilford
+ * algorithm for Tidy Trees, see:
+ * http://billmill.org/pymag-trees/
  */
 var fixTree = function(root, gs) {
-	//Base Case 1
-	if(! root)
-		return;
-	//Base Case 2
-	if (root.isLeaf()) {
-		//Draw.
-	}
-	else {
-		//Recursive call on the left, right subtrees.
-		fixTree(root.left, gs);
-		fixTree(root.right, gs);
+	console.log('Fixing tree...');
+	determineInitialX(root);
+	positionChildren(root);
 
-		//Move both subtrees a sufficient distance apart.
+	//A very succinct way of finding the minimum value of an array in JS.
+	//http://stackoverflow.com/questions/2870015/math-min-apply0-array-why
+	//We don't want to have negative X values!
+	var minX = Math.min.apply(null, getLeftContour(root, '', 0));
+	var rootMod = (minX < 0) ? minX * -1 : 0;
 
-		//Place this node's x value halfway between left/right,
-		//or one unit between itself and child.
+	if (minX < 0)
+		console.log('Fixing negative mods, min of: ' + minX);
+
+	addMods(root, rootMod, gs);
+
+	fixOverlap(root, gs);
+
+	drawNode(root, gs);
+};
+
+var fixOverlap = function(root, gs) {
+	if (root) {
+		fixOverlap(root.left, gs);
+		fixOverlap(root.right, gs);
+		if (root.left && root.right) {
+			console.log('Checking overlaps in ' + root.val);
+			var leftContour = getLeftContour(root.right, '', 0);
+			var rightContour = getRightContour(root.left, '', 0);
+			console.log('Left Contour: ' + leftContour);
+			console.log('Right Contour: ' + rightContour);
+			var maxOverlap = 0, minLeft = 9999, maxRight = -1;
+			for (var i = 0; i < Math.min(leftContour.length, rightContour.length); i++) {
+				minLeft = Math.min(leftContour[i], minLeft);
+				maxRight = Math.max(rightContour[i], maxRight);
+				//Overlap
+				if (minLeft - 0.5 <= maxRight) {
+					maxOverlap = Math.max(maxOverlap, maxRight - minLeft + 1);
+				}
+			}
+			if (maxOverlap) {
+				console.log('Found overlap, ' + maxOverlap);
+				addMods(root.right, maxOverlap, gs);
+				root.X = (root.left.X + root.right.X)/2;
+			}
+		}
 	}
-}
+};
+
+/**
+ *
+ *
+ */
+var drawNode = function(root, gs) {
+	if (root) {
+		// root.translateTo(root.X * root.radius, root.depth() * root.radius);
+		//Root node will always be in the center.
+		root.posX = gs.width/2 +(root.X - gs.root.X) * root.radius * 3;
+		root.posY = root.radius + root.depth() * root.radius * 3;
+		root.label = root.X;
+		root.draw(gs);
+
+		//Clear edges.
+		root.clearEdges();
+		if (root.parentNode)
+			root.drawEdge(root.parentNode, gs);
+
+		drawNode(root.left, gs);
+		drawNode(root.right, gs);
+	}
+};
+
 
 /**
  * Graph Module
