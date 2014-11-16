@@ -61,11 +61,9 @@ var determineInitialX = function(root) {
 		if (! root.isLeftMost()) {
 			root.X = root.getLeftSibling().X;
 			root.mod = 0;
-			// root.X = root.parentNode.X +
 		}
 		else
 			root.X = 0;
-		root.svg.select('#label').text(root.X);
 	}
 };
 
@@ -228,8 +226,6 @@ var drawNode = function(root, gs) {
 	if (root) {
 		var newX = gs.width/2 + (root.X - gs.root.X) * gs.radius * 3;
 		var newY = gs.radius + root.depth() * gs.radius * 3;
-		root.label = root.X;
-		// root.translateTo(newX, newY);
 		root.oldX = root.posX;
 		root.oldY = root.posY;
 		root.posX = newX;

@@ -111,12 +111,33 @@ Node.prototype.unvisit = function() {
 };
 
 /**
+ * Function: updateLabel
+ * ---------------------
+ * Updates and redraws only the label text.
+ */
+Node.prototype.updateLabel = function(newLabel) {
+	if (! this.label) {
+		this.label = newLabel;
+		this.svg.append('text').text(this.label)
+			.attr('id', 'label')
+			.attr('x', this.oldX)
+			.attr('y', this.oldY + 50)
+			.attr('text-anchor', 'middle')
+			.attr('font-size', 30)
+			;
+	}
+	else {
+		this.label = newLabel;
+		this.svg.select('#label').text(this.label);
+	}
+}
+
+/**
  * Function: draw
  * ---------------
  * @param gs - the graph service
  */
 Node.prototype.draw = function(gs) {
-	var scalingFactor = this.radius / gs.radius;
 	var d3 = gs.d3;
 
 	//Remove old node from canvas.
@@ -134,16 +155,9 @@ Node.prototype.draw = function(gs) {
 		;
 	svg.append('text').text(this.val)
 		.attr('x', this.oldX)
-		.attr('y', this.oldY + 15 * scalingFactor)
+		.attr('y', this.oldY + 20)
 		.attr('text-anchor', 'middle')
-		.attr('font-size', 50 * scalingFactor)
-		;
-	svg.append('text').text(this.label)
-		.attr('id', 'label')
-		.attr('x', this.oldX)
-		.attr('y', this.oldY + 50 * scalingFactor)
-		.attr('text-anchor', 'middle')
-		.attr('font-size', 30)
+		.attr('font-size', 50)
 		;
 	var transformString = 'translate(' + (this.posX - this.oldX) + ' ' + (this.posY - this.oldY) + ')';
 	svg
