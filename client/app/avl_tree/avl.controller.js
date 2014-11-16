@@ -20,10 +20,16 @@ angular.module('bstvisualizerApp')
 	var reg = gs.reg;
 
 
+	/**
+	 * Function: createNewNode
+	 * -----------------------
+	 * Called when the user enters a value to be inserted in the tree.
+	 * Right now it just draws a random circle.
+	 */
 	$scope.createNewNode = function() {
 		console.log('Creating new AVL Node.');
 
-		//Check for valid input text.
+		//Check if input text is valid.
 		if (! reg.test(this.newNodeValue)) {
 			this.newNodeValue = '';
 			this.setInputAlert(true);
@@ -37,7 +43,7 @@ angular.module('bstvisualizerApp')
 			return;
 		}
 
-		//
+		//Disable warning message.
 		this.setInputAlert(false);
 		//
 		var value = this.newNodeValue.substring(0, 1).toUpperCase();
@@ -48,12 +54,26 @@ angular.module('bstvisualizerApp')
 		}
 
 		var node = new ANode(value, gs);
+		node.posX = Math.random() * gs.width;
+		node.posY = Math.random() * gs.height;
 		node.draw(gs);
+
+		fixTree(gs.root, gs);
 
 		gs.nodes.push(node);
 		gs.keys.push(value);
 		this.newNodeValue = '';
-	}
+
+
+		this.updateNodeLabels(gs.nodes);
+	};
+
+	$scope.updateNodeLabels = function(nodes) {
+		for (var i = 0; i < nodes.length; i++) {
+			nodes[i].label = nodes[i].height;
+			nodes[i].updateLabel();
+		}
+	};
 
 	/**
 	 * Function: setInputAlert

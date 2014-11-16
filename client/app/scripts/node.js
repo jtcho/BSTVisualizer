@@ -115,19 +115,8 @@ Node.prototype.unvisit = function() {
  * ---------------------
  * Updates and redraws only the label text.
  */
-Node.prototype.updateLabel = function(newLabel) {
-	if (! this.label) {
-		this.label = newLabel;
-		this.svg.append('text').text(this.label)
-			.attr('id', 'label')
-			.attr('x', this.oldX)
-			.attr('y', this.oldY + 50)
-			.attr('text-anchor', 'middle')
-			.attr('font-size', 30)
-			;
-	}
-	else {
-		this.label = newLabel;
+Node.prototype.updateLabel = function() {
+	if (this.label) {
 		this.svg.select('#label').text(this.label);
 	}
 }
@@ -159,9 +148,15 @@ Node.prototype.draw = function(gs) {
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50)
 		;
+	svg.append('text').attr('id', 'label')
+		.attr('x', this.oldX)
+		.attr('y', this.oldY + 50)
+		.attr('text-anchor', 'middle')
+		.attr('font-size', 30)
+		;
+
 	var transformString = 'translate(' + (this.posX - this.oldX) + ' ' + (this.posY - this.oldY) + ')';
-	svg
-		.transition()
+	svg.transition()
 		.duration(2000)
 		.attr('transform', transformString);
 };
@@ -255,35 +250,16 @@ Node.prototype.clearEdges = function() {
  var ANode = function(val, gs) {
  	Node.call(this, val);
  	this.init(gs, val);
+ 	
+
+ 	//Propagate heights upward.
+ 	this.height = 1;
+ 	for (var parent = this.parentNode; parent; parent = parent.parentNode) {
+ 		parent.height = Math.max((parent.left) ? parent.left.height + 1 : 0, (parent.right) ? parent.right.height + 1 : 0);
+ 	}
  };
 
 ANode.prototype = new Node();
-
-ANode.prototype.init = function(gs, val) {
-	if (! gs.root) {
-		this.posX = gs.width / 2;
-		this.posY = 200;
-		this.parentNode = '';
-		this.radius = gs.radius;
-		gs.root = this;
-	}
-	//Handle coordinate calculations here...
-	else {
-		this.parentNode = findParentNode(gs.root, this.val);
-		this.radius = this.parentNode.radius * 0.7;
-		this.posY = this.parentNode.posY + this.radius*3;
-
-		var xShift = this.radius*2*(1+Math.exp(-1 * this.depth()/8));
-		if (this.val < this.parentNode.val) {
-			this.posX = this.parentNode.posX - xShift;
-		}
-		else {
-			this.posX = this.parentNode.posX + xShift;
-		}
-
- 		this.insert(gs.root, val);
-	}
-}
 
 /**
  * Function: insert
@@ -300,10 +276,13 @@ ANode.prototype.insert = function(node, val) {
 		else
 			node.left = this;
 		//Check heights.
-		if (height(node.left) - height(node.right) == 2) {
+		if (node.left.height - node.right.height == 2) {
 			console.log('Imbalance found at node of value: ' + node.val);
 			if (val < node.left.val) {
 				console.log('Left left case.');
+			}
+			else {
+				console.log('Left right case.');
 			}
 		}
 	}
@@ -314,10 +293,13 @@ ANode.prototype.insert = function(node, val) {
 		else
 			node.right = this;
 		//Check heights.
-		if (height(node.right) - height(node.left) == 2) {
+		if (node.right.height - node.left.height == 2) {
 			console.log('Imbalance found at node of value: ' + node.val);
 			if (val > node.right.val) {
 				console.log('Right right case.');
+			}
+			else {
+				console.log('Right left case.');
 			}
 		}
 	}

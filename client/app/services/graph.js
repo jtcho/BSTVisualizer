@@ -26,6 +26,7 @@ var findParentNode = function(node, val) {
  * Finds the height of the given node.
  */
  var height = function(node) {
+ 	console.log(node.val);
  	if (! node)
  		return 0;
  	return Math.max(1 + height(node.left), 1 + height(node.right));
@@ -235,6 +236,7 @@ var drawNode = function(root, gs) {
 
 		if (redraw) {
 			root.draw(gs);
+
 			//Clear edges.
 			root.clearEdges();
 			if (root.parentNode)

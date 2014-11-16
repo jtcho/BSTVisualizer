@@ -25,7 +25,8 @@ angular.module('bstvisualizerApp')
 	 * Right now it just draws a random circle.
 	 */
 	$scope.createNewNode = function() {
-		//Check if input text is valid..
+
+		//Check if input text is valid.
 		if (! reg.test(this.newNodeValue)) {
 			this.newNodeValue = '';
 			this.setInputAlert(true);
