@@ -54,8 +54,6 @@ angular.module('bstvisualizerApp')
 		node.posY = Math.random() * gs.height;
 		node.draw(gs);
 
-		console.log('Added node with val: '+ value);
-
 		fixTree(gs.root, gs);
 
 		gs.nodes.push(node);

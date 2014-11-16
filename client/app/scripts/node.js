@@ -19,6 +19,8 @@ var Node = function(val) {
 	this.mod = 0;	//amount to shift this node and its subtree
 	this.posX = 0;	//x position coordinate
 	this.posY = 0;	//y position coordinate
+	this.oldX = 0;
+	this.oldY = 0;
 	this.radius = 0;//radius of node
 	this.svg = '';	//correspondent svg group
 	this.edges = [];//drawn edges 
@@ -125,24 +127,29 @@ Node.prototype.draw = function(gs) {
 	this.svg = svg;
 
 	svg.append('circle')
-		.attr('cx', this.posX)
-		.attr('cy', this.posY)
+		.attr('cx', this.oldX)
+		.attr('cy', this.oldY)
 		.attr('r', this.radius)
 		.attr('class', 'node')
 		;
 	svg.append('text').text(this.val)
-		.attr('x', this.posX)
-		.attr('y', this.posY + 15 * scalingFactor)
+		.attr('x', this.oldX)
+		.attr('y', this.oldY + 15 * scalingFactor)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50 * scalingFactor)
 		;
 	svg.append('text').text(this.label)
 		.attr('id', 'label')
-		.attr('x', this.posX)
-		.attr('y', this.posY + 50 * scalingFactor)
+		.attr('x', this.oldX)
+		.attr('y', this.oldY + 50 * scalingFactor)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 30)
 		;
+	var transformString = 'translate(' + (this.posX - this.oldX) + ' ' + (this.posY - this.oldY) + ')';
+	svg
+		.transition()
+		.duration(2000)
+		.attr('transform', transformString);
 };
 
 /**
@@ -178,6 +185,11 @@ Node.prototype.drawEdge = function(node, gs) {
  */
 Node.prototype.clearEdges = function() {
 	for (var i = 0; i < this.edges.length; i++) {
+		// this.edges[i].attr('class', 'link faded');
+		// var toRemove = this.edges[i];
+		// setTimeout(function() {
+		// 	toRemove.remove();
+		// }, 2000);
 		this.edges[i].remove();
 	}
 };

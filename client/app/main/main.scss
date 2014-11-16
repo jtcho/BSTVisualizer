@@ -8,7 +8,11 @@ p {
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;
   opacity: 0;
-  animation: dash 2s ease 1s 1 forwards;
+  animation: dash 2s ease 2s 1 forwards;
+}
+
+.link.faded {
+  animation: fadeout 1s ease;
 }
 
 .node.visited {
@@ -45,6 +49,11 @@ p {
   0% { opacity: 0;  }
   50% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+@keyframes fadeout {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .input_alert {
