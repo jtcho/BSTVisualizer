@@ -78,7 +78,7 @@ Node.prototype.depth = function() {
 Node.prototype.visit = function() {
 	this.visited = true;
 	this.svg.select('circle')
-		.attr('class', 'node visited');
+		.attr('class', this.getClassString());
 };
 
 /**
@@ -89,7 +89,7 @@ Node.prototype.visit = function() {
 Node.prototype.unvisit = function() {
 	this.visited = false;
 	this.svg.select('circle')
-		.attr('class', 'node');
+		.attr('class', this.getClassString());
 };
 
 /**
@@ -125,7 +125,7 @@ Node.prototype.drawAtPosition = function(gs, px, py) {
 	//Label svg element.
 	svg.attr('id', '#'+this.val);
 
-	var classString = 'node' + ((this.visited) ? ' visited' : '');
+	var classString = this.getClassString();
 
 	svg.append('circle')
 		.attr('cx', px)
@@ -148,6 +148,21 @@ Node.prototype.drawAtPosition = function(gs, px, py) {
 
 };
 
+/**
+ * Function: getClassString
+ * -------------------------
+ * Returns a formatted string with the classes to be applied to this node's circle.
+ */
+Node.prototype.getClassString = function() {
+	return 'node' + ((this.visited) ? ' visited' : '') + ((this.class) ? ' ' + this.class : '');
+};
+
+/**
+ * Function: animationQueueCallback
+ * --------------------------------
+ * The callback function to be called when an animation
+ * is completed.
+ */
 var animationQueueCallback = function(gs, node) {
 	//Pop the animation that just finished.
 	node.animationQueue.shift();
@@ -162,12 +177,25 @@ var animationQueueCallback = function(gs, node) {
 			.each('end', animationQueueCallback(node));
 
 	}
+
+	//Unmark the node after a two second delay.
 	setTimeout(function() {
 		if (node.visited)
 			node.unvisit();
 	}, 2000);
 };
 
+/**
+ * Function: enqueueAnimation
+ * --------------------------
+ * Enqueues an animation for this node.
+ * Currently doesn't function entirely as intended,
+ * due to SVG animations automatically completing when canvas
+ * updates are issued.
+ *
+ * @param gs -
+ * @param animation - 
+ */
 Node.prototype.enqueueAnimation = function(gs, animation) {
 
 	this.animationQueue.push(animation);
@@ -213,15 +241,12 @@ Node.prototype.drawEdge = function(node, gs) {
 };
 
 /**
- *
+ * Function: clearEdges
+ * --------------------
+ * Clears all of the edges attached to this node from the canvas.
  */
 Node.prototype.clearEdges = function() {
 	for (var i = 0; i < this.edges.length; i++) {
-		// this.edges[i].attr('class', 'link faded');
-		// var toRemove = this.edges[i];
-		// setTimeout(function() {
-		// 	toRemove.remove();
-		// }, 2000);
 		this.edges[i].remove();
 	}
 };
@@ -274,7 +299,7 @@ Node.prototype.clearEdges = function() {
  	Node.call(this, val);
  	this.init(gs, val);
  	
-
+ 	this.class = 'avl';
  	//Propagate heights upward.
  	this.height = 1;
  	this.updateParentHeights();
@@ -283,7 +308,9 @@ Node.prototype.clearEdges = function() {
 ANode.prototype = new Node();
 
 /**
- *
+ * Function: updateHeight
+ * ----------------------
+ * Updates the cached height of the AVL node.
  */
  ANode.prototype.updateHeight = function() {
  	this.height = Math.max((this.left) ? this.left.height + 1 : 1, (this.right) ? this.right.height + 1 : 1);
@@ -304,6 +331,27 @@ ANode.prototype = new Node();
  */
 ANode.prototype.balanceFactor = function() {
 	return ((this.left) ? this.left.height : 0) - ((this.right) ? this.right.height : 0);
+};
+
+/**
+ * Type: LNode
+ * -----------
+ * Defines a self-balancing LLRB Tree node.
+ */
+var LNode = function(val, gs) {
+	Node.call(this, val);
+	this.init(gs, val);
+
+	this.class = 'red';
+	this.isRed = true;
+};
+
+LNode.prototype = new Node();
+
+LNode.prototype.flipColor = function() {
+	this.isRed = ! this.isRed;
+	this.class = (this.isRed) ? 'red' : 'black';
+	this.svg.select('circle').attr('class', this.getClassString());
 };
 
 /**

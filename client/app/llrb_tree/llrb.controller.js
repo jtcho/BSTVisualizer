@@ -55,13 +55,17 @@ angular.module('bstvisualizerApp')
 
 		this.history += value;
 
-		var node = new ANode(value, gs);
+		var node = new LNode(value, gs);
 		node.posX = Math.random() * gs.width;
 		node.posY = Math.random() * gs.height;
 		node.drawAtPosition(gs, node.posX, node.posY);
 
 		//Fix layout.
 		fixTree(gs.root, gs);
+
+		// node.flipColor();
+
+		//
 
 		gs.nodes.push(node);
 		gs.keys.push(value);
@@ -85,3 +89,18 @@ angular.module('bstvisualizerApp')
 	};
 
 }]);
+
+/**
+ * Function: rebalanceLLRB
+ * -----------------------
+ * Rebalances the LLRB tree.
+ */
+var rebalanceLLRB = function(node, gs) {
+
+};
+
+
+
+
+
+

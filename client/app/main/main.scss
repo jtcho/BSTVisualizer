@@ -15,13 +15,6 @@ p {
   animation: fadeout 1s ease;
 }
 
-.node.visited {
-  stroke: #f9e470;
-  // stroke: #f00;
-  stroke-width: 10px;
-  // animation: fadein 1s ease 1;
-}
-
 @keyframes dash {
   from {
     opacity: 1;
@@ -36,6 +29,31 @@ p {
 .node {
   fill: #b3eeff;
   stroke: #2bacd2;
+  stroke-width: 5px;
+}
+
+.node.avl {
+  fill: #eec7eb;
+  stroke: #724c6f;
+  stroke-width: 5px;
+}
+
+.node.visited {
+  stroke: #f9e470;
+  // stroke: #f00;
+  stroke-width: 10px;
+  // animation: fadein 1s ease 1;
+}
+
+.node.red {
+  fill: #f9bcc6;
+  stroke: #5a0c19;
+  stroke-width: 5px;
+}
+
+.node.black {
+  fill: #bcb8b9;
+  stroke: #323232;
   stroke-width: 5px;
 }
 
