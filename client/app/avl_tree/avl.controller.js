@@ -19,6 +19,8 @@ angular.module('bstvisualizerApp')
 	var nodeRadius = gs.radius;
 	var reg = gs.reg;
 
+	var running =  false;
+
 
 	/**
 	 * Function: createNewNode
@@ -31,7 +33,13 @@ angular.module('bstvisualizerApp')
 		//Check if input text is valid.
 		if (! reg.test(this.newNodeValue)) {
 			this.newNodeValue = '';
-			this.setInputAlert(true);
+			this.setInputAlert(true, 'Please enter a valid alphabetical string.');
+			return;
+		}
+
+		if (running) {
+			this.newNodeValue = '';
+			this.setInputAlert(true, 'Please wait until the animation is finished.');
 			return;
 		}
 
@@ -41,6 +49,8 @@ angular.module('bstvisualizerApp')
 			this.newNodeValue = '';
 			return;
 		}
+
+		running = true;
 
 		//Disable warning message.
 		this.setInputAlert(false);
@@ -70,9 +80,22 @@ angular.module('bstvisualizerApp')
 		//Fix layout again.
 		fixTree(gs.root, gs);
 
-		//Update all the balance factor labels.
-		this.updateNodeLabels(gs.nodes);
+		var ctrl = this;
 
+		//Update all the balance factor labels.
+		ctrl.updateNodeLabels(gs.nodes);
+
+		setTimeout(function() {
+			rebalanceAVL(node, gs);
+			fixTree(gs.root, gs);
+
+			//Update all the balance factor labels.
+			ctrl.updateNodeLabels(gs.nodes);
+
+			running = false;
+
+			ctrl.setInputAlert(false);
+		}, 2000);
 	};
 
 	/**
@@ -92,9 +115,11 @@ angular.module('bstvisualizerApp')
 	 * -----------------------
 	 * Set the invalid input alert toggle.
 	 */
-	$scope.setInputAlert = function(state) {
-		if (state)
+	$scope.setInputAlert = function(state, text) {
+		if (state) {
 			angular.element('.input_alert').css('opacity', '0.9');
+			$scope.alertText = text;
+		}
 		else
 			angular.element('.input_alert').css('opacity', '0');
 	};
@@ -116,6 +141,7 @@ var rebalanceAVL = function(node, gs) {
 		//If the left side node is imbalanced to the right sightly, rotate left first.
 		if (node.left.balanceFactor() === -1) {
 			rotateLeft(node.left.right, gs);
+			return;
 		}
 		rotateRight(node.left, gs);
 		rebalanceAVL(node.left.parentNode, gs);
@@ -123,6 +149,7 @@ var rebalanceAVL = function(node, gs) {
 	else if (node.balanceFactor() <= -2) {
 		if (node.right.balanceFactor() === 1) {
 			rotateRight(node.right.left, gs);
+			return;
 		}
 		rotateLeft(node.right, gs);
 		rebalanceAVL(node.right.parentNode, gs);
