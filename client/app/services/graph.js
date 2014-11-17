@@ -185,6 +185,7 @@ var fixTree = function(root, gs) {
 
 	fixOverlap(root, gs);
 
+	updatePositions(root, gs);
 	drawNode(root, gs);
 };
 
@@ -219,11 +220,12 @@ var fixOverlap = function(root, gs) {
 };
 
 /**
- * Function: drawNode
- * ------------------
- * Recursively draws a node and all of its children.
+ * Function: updatePositions
+ * -------------------------
+ * Recalculates an entire tree's graphical coordinates
+ * given its constituent X/Y values.
  */
-var drawNode = function(root, gs) {
+var updatePositions = function(root, gs) {
 	if (root) {
 		var newX = gs.width/2 + (root.X - gs.root.X) * gs.radius * 3;
 		var newY = gs.radius + root.depth() * gs.radius * 3;
@@ -232,15 +234,28 @@ var drawNode = function(root, gs) {
 		root.posX = newX;
 		root.posY = newY;
 
-		var redraw = root.oldX != newX || root.oldY != newY;
+		updatePositions(root.left, gs);
+		updatePositions(root.right, gs);
+	}
+};
+
+/**
+ * Function: drawNode
+ * ------------------
+ * Recursively draws a node and all of its children.
+ */
+var drawNode = function(root, gs) {
+	if (root) {
+		var redraw = root.oldX != root.posX || root.oldY != root.posY;
 
 		if (redraw) {
 			root.draw(gs);
 
 			//Clear edges.
 			root.clearEdges();
-			if (root.parentNode)
+			if (root.parentNode) {
 				root.drawEdge(root.parentNode, gs);
+			}
 			if (root.left) {
 				root.left.clearEdges();
 				root.left.drawEdge(root, gs);

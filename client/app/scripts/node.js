@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ *
+ */
+var onAnimationEnd = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
+
+/**
  * Type: Node
  * ------------
  * Defines an abstract Node object, an arbitrary
@@ -15,7 +20,6 @@ var Node = function(val) {
 
 	//Drawing Parameters
 	this.X = 0;		//x index
-	this.Y = 0; 	//depth
 	this.mod = 0;	//amount to shift this node and its subtree
 	this.posX = 0;	//x position coordinate
 	this.posY = 0;	//y position coordinate
@@ -24,6 +28,7 @@ var Node = function(val) {
 	this.radius = 0;//radius of node
 	this.svg = '';	//correspondent svg group
 	this.edges = [];//drawn edges 
+	this.animationQueue = [];
 
 };
 
@@ -69,12 +74,20 @@ Node.prototype.depth = function() {
  * Translates ONLY this node and animates.
  */
 Node.prototype.translate = function(dx, dy) {
+	console.log('test');
+
 	//
 	var transformString = 'translate(' + dx + ' ' + dy + ')';
-	this.svg
-	.transition()
-	.duration(2000)
-	.attr('transform', transformString);
+
+	this.enqueueAnimation({
+		duration: 2000,
+		transform: transformString
+	});
+
+	// this.svg
+	// .transition()
+	// .duration(2000)
+	// .attr('transform', transformString);
 
 	this.posX += dx;
 	this.posY += dy;
@@ -136,6 +149,9 @@ Node.prototype.draw = function(gs) {
 	var svg = gs.zoomLayer.append('g');
 	this.svg = svg;
 
+	//Label svg element.
+	svg.attr('id', '#'+this.val);
+
 	svg.append('circle')
 		.attr('cx', this.oldX)
 		.attr('cy', this.oldY)
@@ -155,10 +171,36 @@ Node.prototype.draw = function(gs) {
 		.attr('font-size', 30)
 		;
 
+	var node = this;
+
 	var transformString = 'translate(' + (this.posX - this.oldX) + ' ' + (this.posY - this.oldY) + ')';
-	svg.transition()
-		.duration(2000)
-		.attr('transform', transformString);
+
+	this.enqueueAnimation({
+		duration: 2000,
+		transform: transformString
+	});
+};
+
+var animationQueueCallback = function(node) {
+	//If there are any outstanding animations, try.
+	if (node.animationQueue.length > 0) {
+		var animation = node.animationQueue.shift();
+		node.svg.transition()
+		.duration(animation.duration)
+		.attr('transform', animation.transform)
+		.each('end', animationQueueCallback(node));
+	}
+};
+
+Node.prototype.enqueueAnimation = function(animation) {
+	this.animationQueue.push(animation);
+	//If no prior queued animations, just start immediately.
+	if (this.animationQueue.length == 1) {
+		this.svg.transition()
+		.duration(animation.duration)
+		.attr('transform', animation.transform)
+		.each('end', animationQueueCallback(this));
+	}
 };
 
 /**
@@ -170,7 +212,7 @@ Node.prototype.draw = function(gs) {
 Node.prototype.drawEdge = function(node, gs) {
 	var svg = gs.zoomLayer;
 
-	var theta = (node.X === this.X) ? 1.57 : Math.atan((node.posY - this.posY)/(node.posX - this.posX));
+	var theta = Math.atan((node.posY - this.posY)/(node.posX - this.posX));
 
 	var xo2 = node.radius * Math.cos(theta);
 	var yo2 = node.radius * Math.sin(theta);

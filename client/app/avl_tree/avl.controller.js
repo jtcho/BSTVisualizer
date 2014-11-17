@@ -65,13 +65,15 @@ angular.module('bstvisualizerApp')
 		gs.keys.push(value);
 		this.newNodeValue = '';
 
+		//AVL Rebalance.
+		rebalanceAVL(node, gs);
+
+		//Fix layout again.
+		fixTree(gs.root, gs);
+
 		//Update all the balance factor labels.
 		this.updateNodeLabels(gs.nodes);
 
-		//AVL Rebalance.
-		rebalanceAVL(node);
-
-		//Fix layout again.
 	};
 
 	/**
@@ -105,7 +107,7 @@ angular.module('bstvisualizerApp')
  * ----------------------
  * Rebalances an AVL tree from the bottom up.
  */
-var rebalanceAVL = function(node) {
+var rebalanceAVL = function(node, gs) {
 	//Base case, end recursion.
 	if (! node)
 		return;
@@ -118,23 +120,80 @@ var rebalanceAVL = function(node) {
 			//If left node has a positive balance factor, rotate left first.
 			if (node.left.balanceFactor() === -1) {
 				console.log('Rotating subtree ' + node.left.val + ' left.');
+				rotateLeft(node.left.right, gs);
 			}
 			console.log('Rotating subtree ' + node.val + ' right.');
+			rotateRight(node.left, gs);
+			return;
 		}
 		//Right subtree has imbalance.
 		else {
 			if (node.right.balanceFactor() === 1) {
 				console.log('Rotating subtree ' + node.right.val + ' right.');
+				rotateRight(node.right.left, gs);
 			}
 			console.log('Rotating subtree ' + node.val + ' left.');
+			rotateLeft(node.right, gs);
+			return;
 		}
 	}
 
 	//Recurse upwards.
-	rebalanceAVL(node.parentNode);
+	rebalanceAVL(node.parentNode, gs);
 };
 
+/**
+ * Function: rotateRight
+ * ---------------------
+ * Rotates a particular node to the right.
+ */
+var rotateRight = function(node, gs) {
+	var parent = node.parentNode;
+	node.parentNode = parent.parentNode;
 
+	if (node.parentNode) {
+		if (node.parentNode.left === parent)
+			node.parentNode.left = node;
+		else
+			node.parentNode.right = node;
+	}
+
+	//If the old parent was the root of the tree, update root.
+	if (parent === gs.root)
+		gs.root = node;
+
+	parent.left = node.right;
+	if (node.right)
+		node.right.parentNode = parent;
+	node.right = parent;
+	parent.parentNode = node;
+};
+
+/**
+ * Function: rotateLeft
+ * ---------------------
+ * Rotates a particular node to the left.
+ */
+var rotateLeft = function(node, gs) {
+	var parent = node.parentNode;
+	node.parentNode = parent.parentNode;
+
+	if (node.parentNode) {
+		if (node.parentNode.left === parent)
+			node.parentNode.left = node;
+		else
+			node.parentNode.right = node;
+	}
+
+	if (parent === gs.root)
+		gs.root = node;
+
+	parent.right = node.left;
+	if (node.left)
+		node.left.parentNode = parent;
+	node.left = parent;
+	parent.parentNode = node;
+};
 
 
 
