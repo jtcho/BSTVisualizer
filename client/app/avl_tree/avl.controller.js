@@ -22,9 +22,6 @@ angular.module('bstvisualizerApp')
 	var nodeRadius = gs.radius;
 	var reg = gs.reg;
 
-	var running =  false;
-
-
 	/**
 	 * Function: createNewNode
 	 * -----------------------
@@ -37,12 +34,6 @@ angular.module('bstvisualizerApp')
 		if (! reg.test(this.newNodeValue)) {
 			this.newNodeValue = '';
 			this.setInputAlert(true, 'Please enter a valid alphabetical string.');
-			return;
-		}
-
-		if (running) {
-			this.newNodeValue = '';
-			this.setInputAlert(true, 'Please wait until the animation is finished.');
 			return;
 		}
 
@@ -60,8 +51,6 @@ angular.module('bstvisualizerApp')
 			this.history = '';
 			return;
 		}
-
-		// running = true;
 
 		//Disable warning message.
 		this.setInputAlert(false);
@@ -90,28 +79,14 @@ angular.module('bstvisualizerApp')
 		//AVL Rebalance.
 		if (! rebalanceAVL(node, gs)) {
 
-		//Fix layout again.
-		fixTree(gs.root, gs);
+			//Fix layout again.
+			fixTree(gs.root, gs);
 
-		var ctrl = this;
-
-		//Update all the balance factor labels.
-		updateNodeLabels(gs.nodes);
-		}
-
-		// setTimeout(function() {
-			// rebalanceAVL(node, gs);
-			// fixTree(gs.root, gs);
+			var ctrl = this;
 
 			//Update all the balance factor labels.
-			// ctrl.updateNodeLabels(gs.nodes);
-
-		// }, 2000);
-
-		// setTimeout(function() {
-			// running = false;
-		// 	ctrl.setInputAlert(false);
-		// }, 2000);
+			updateNodeLabels(gs.nodes);
+		}
 	};
 
 	/**
@@ -161,8 +136,10 @@ var rebalanceAVL = function(node, gs) {
 		//If the left side node is imbalanced to the right sightly, rotate left first.
 		if (node.left.balanceFactor() === -1) {
 			rotateLeft(node.left.right, gs);
-			shouldCallerWait = true;
 
+			//Gross, but the only way we can show the intermediate animation step with the
+			//double rotation with the current set up. I might try to fix this in the future.
+			shouldCallerWait = true;
 			setTimeout(function() {
 				rotateRight(node.left, gs);
 				rebalanceAVL(node.left.parentNode, gs);
@@ -179,6 +156,7 @@ var rebalanceAVL = function(node, gs) {
 	else if (node.balanceFactor() <= -2) {
 		if (node.right.balanceFactor() === 1) {
 			rotateRight(node.right.left, gs);
+
 			shouldCallerWait = true;
 			setTimeout(function() {
 				rotateLeft(node.right, gs);

@@ -43,6 +43,11 @@ angular.module('bstvisualizerApp')
 		templateUrl: 'app/avl_tree/avlTree.html',
 		controller: 'AVLCtrl'
 	})
+	.state('main.load.llrb', {
+		url: 'llrb',
+		templateUrl: 'app/llrb_tree/llrbTree.html',
+		controller: 'LLRBCtrl'
+	})
 	;
 })
 ;

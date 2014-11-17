@@ -1,0 +1,48 @@
+<div class="container text-center" id="graph_container">
+
+	<div class="row">
+
+		<a href="http://en.wikipedia.org/wiki/Left-leaning_red-black_tree">
+		<h1>Left Leaning Red-Black Binary Search Tree</h1>
+		</a>
+
+		<br>
+
+		<div id="warning_box">
+
+		<alert class="input_alert" type="warning" close="setInputAlert(false)">
+      		<strong>Error: </strong> {{alertText}}
+    	</alert>
+
+    	</div>
+
+		<div class="col-lg-2"></div>
+
+	    <div class="col-lg-8">
+
+	    <p>
+	    This visualization demonstrates how elements are added to a left leaning red-black (LLRB) binary search tree. A variant of the red-black tree, the LLRB guarantees the same order of algorithmic complexity while requiring less code to implement. It was invented in 2008 by Robert Sedgewick over at Princeton University!
+	    </p>
+	    <p style="font-style: italic">
+	    Double-tap or mouse-scroll to zoom. Type 'clear' to reset. <br>Caution, you are advised not to spam the text-box.
+	    </p>
+
+	    </div>
+
+	    <div class="col-lg-2"></div>
+	</div>
+	<div class="row">
+    <form ng-submit="createNewNode()">
+      <p class="form-group">
+        <input type="text" class="form-control text-center" ng-model="newNodeValue" placeholder="Input value for a new node and press ENTER." />
+        <input type="submit" style="display: none;"/>
+      </p>
+    </form>
+
+    <p>
+    Input History: {{history}}
+    </p>
+
+  </div>
+
+</div>

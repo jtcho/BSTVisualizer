@@ -14,6 +14,10 @@ angular.module('bstvisualizerApp')
 		{
 			'title': 'avl bst',
 			'slink': 'main.load.avl'
+		},
+		{
+			'title': 'llrb bst',
+			'slink': 'main.load.llrb'
 		}
 	];
 
