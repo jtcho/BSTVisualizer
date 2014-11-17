@@ -119,7 +119,7 @@ var rebalanceLLRB = function(node, gs) {
 		}
 		else {
 			// console.log(node.val + ': Rotating left.');
-			rotateLeft(node, gs);
+			llrb_rotateLeft(node, gs);
 
 			rebalanceLLRB(node.left, gs);
 			return;
@@ -130,7 +130,7 @@ var rebalanceLLRB = function(node, gs) {
 	if (node.isRed && node.parentNode && node.parentNode != gs.root && node.parentNode.isRed) {
 		// console.log(node.val + ': Two reds in a row, rotating right.');
 		var parent = node.parentNode;
-		rotateRight(parent, gs);
+		llrb_rotateRight(parent, gs);
 
 		//
 		if (node.isRed && parent.right.isRed) {
@@ -149,7 +149,7 @@ var rebalanceLLRB = function(node, gs) {
  * ---------------------
  * Rotates a particular node to the right.
  */
-var rotateRight = function(node, gs) {
+var llrb_rotateRight = function(node, gs) {
 	// console.log('Rotating ' + node.val + ' right.');
 	node.visit();
 	var parent = node.parentNode;
@@ -183,7 +183,7 @@ var rotateRight = function(node, gs) {
  * ---------------------
  * Rotates a particular node to the left.
  */
-var rotateLeft = function(node, gs) {
+var llrb_rotateLeft = function(node, gs) {
 	node.visit();
 	var parent = node.parentNode;
 	node.parentNode = parent.parentNode;
