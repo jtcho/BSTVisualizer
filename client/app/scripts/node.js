@@ -116,9 +116,9 @@ Node.prototype.unvisit = function() {
  * Updates and redraws only the label text.
  */
 Node.prototype.updateLabel = function() {
-	if (this.label) {
+	// if (this.label) {
 		this.svg.select('#label').text(this.label);
-	}
+	// }
 }
 
 /**
@@ -262,48 +262,15 @@ Node.prototype.clearEdges = function() {
 ANode.prototype = new Node();
 
 /**
- * Function: insert
- * ----------------
- * Insert this node into the given root's subtree.
- * Also rebalances the tree as necessary.
+ * Function: balanceFactor
+ * -----------------------
+ * Returns the balance factor for this particular AVL node,
+ * given by the height difference betwen the left subtree
+ * and the right subtree.
  */
-ANode.prototype.insert = function(node, val) {
-	if (val < node.val) {
-		//If the left node is not null, recurse.
-		if (node.left)
-			this.insert(node.left, val);
-		//Otherwise, insert.
-		else
-			node.left = this;
-		//Check heights.
-		if (node.left.height - node.right.height == 2) {
-			console.log('Imbalance found at node of value: ' + node.val);
-			if (val < node.left.val) {
-				console.log('Left left case.');
-			}
-			else {
-				console.log('Left right case.');
-			}
-		}
-	}
-	else {
-		//If the right node is null, insert.
-		if (node.right)
-			this.insert(node.right, val);
-		else
-			node.right = this;
-		//Check heights.
-		if (node.right.height - node.left.height == 2) {
-			console.log('Imbalance found at node of value: ' + node.val);
-			if (val > node.right.val) {
-				console.log('Right right case.');
-			}
-			else {
-				console.log('Right left case.');
-			}
-		}
-	}
-}
+ANode.prototype.balanceFactor = function() {
+	return ((this.left) ? this.left.height : 0) - ((this.right) ? this.right.height : 0);
+};
 
 /**
  * Type: UNode
