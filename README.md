@@ -8,7 +8,8 @@ To draw 'nice' trees, I have implemented a slightly less efficient version of Re
 
 Currently Implemented:
   - Unbalanced
+  - AVL
   
 Planned:
   - Left Leaning Red Black (LLRB)
-  - AVL
+  - 2/3 Trees
