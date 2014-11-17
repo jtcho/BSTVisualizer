@@ -27,7 +27,6 @@ angular.module('bstvisualizerApp')
 	 * Right now it just draws a random circle.
 	 */
 	$scope.createNewNode = function() {
-		console.log('Creating new AVL Node.');
 
 		//Check if input text is valid.
 		if (! reg.test(this.newNodeValue)) {
@@ -56,7 +55,7 @@ angular.module('bstvisualizerApp')
 		var node = new ANode(value, gs);
 		node.posX = Math.random() * gs.width;
 		node.posY = Math.random() * gs.height;
-		node.draw(gs);
+		node.drawAtPosition(gs, node.posX, node.posY);
 
 		//Fix layout.
 		fixTree(gs.root, gs);
@@ -83,7 +82,7 @@ angular.module('bstvisualizerApp')
 	 */
 	$scope.updateNodeLabels = function(nodes) {
 		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].label = nodes[i].balanceFactor();
+			nodes[i].label = 'Ht: ' + (nodes[i].height - 1) + ' Bal: ' + nodes[i].balanceFactor();
 			nodes[i].updateLabel();
 		}
 	};
@@ -112,34 +111,25 @@ var rebalanceAVL = function(node, gs) {
 	if (! node)
 		return;
 
-	//If there's an imbalance, rectify.
-	if (Math.abs(node.balanceFactor()) >= 2) {
-		console.log('Node with value ' + node.val + ' needs rebalancing.');
-		//Check left subtree for imbalance.
-		if (node.left) {
-			//If left node has a positive balance factor, rotate left first.
-			if (node.left.balanceFactor() === -1) {
-				console.log('Rotating subtree ' + node.left.val + ' left.');
-				rotateLeft(node.left.right, gs);
-			}
-			console.log('Rotating subtree ' + node.val + ' right.');
-			rotateRight(node.left, gs);
-			return;
+	//Lopsided to left.
+	if (node.balanceFactor() >= 2) {
+		//If the left side node is imbalanced to the right sightly, rotate left first.
+		if (node.left.balanceFactor() === -1) {
+			rotateLeft(node.left.right, gs);
 		}
-		//Right subtree has imbalance.
-		else {
-			if (node.right.balanceFactor() === 1) {
-				console.log('Rotating subtree ' + node.right.val + ' right.');
-				rotateRight(node.right.left, gs);
-			}
-			console.log('Rotating subtree ' + node.val + ' left.');
-			rotateLeft(node.right, gs);
-			return;
-		}
+		rotateRight(node.left, gs);
+		rebalanceAVL(node.left.parentNode, gs);
 	}
-
-	//Recurse upwards.
-	rebalanceAVL(node.parentNode, gs);
+	else if (node.balanceFactor() <= -2) {
+		if (node.right.balanceFactor() === 1) {
+			rotateRight(node.right.left, gs);
+		}
+		rotateLeft(node.right, gs);
+		rebalanceAVL(node.right.parentNode, gs);
+	}
+	else
+		//Recurse upwards.
+		rebalanceAVL(node.parentNode, gs);
 };
 
 /**
@@ -148,6 +138,7 @@ var rebalanceAVL = function(node, gs) {
  * Rotates a particular node to the right.
  */
 var rotateRight = function(node, gs) {
+	node.visit();
 	var parent = node.parentNode;
 	node.parentNode = parent.parentNode;
 
@@ -167,6 +158,13 @@ var rotateRight = function(node, gs) {
 		node.right.parentNode = parent;
 	node.right = parent;
 	parent.parentNode = node;
+
+	//Decrease height of old parent by 1.
+	// parent.updateHeight();
+	// node.updateHeight();
+	parent.height = Math.max((parent.right) ? parent.right.height + 1 : 1, (parent.left) ? parent.left.height + 1 : 1);
+	node.height = Math.max((node.left) ? node.left.height + 1 : 1, node.right.height + 1);
+	node.updateParentHeights();
 };
 
 /**
@@ -175,6 +173,7 @@ var rotateRight = function(node, gs) {
  * Rotates a particular node to the left.
  */
 var rotateLeft = function(node, gs) {
+	node.visit();
 	var parent = node.parentNode;
 	node.parentNode = parent.parentNode;
 
@@ -193,6 +192,10 @@ var rotateLeft = function(node, gs) {
 		node.left.parentNode = parent;
 	node.left = parent;
 	parent.parentNode = node;
+
+	parent.height = Math.max((parent.left) ? parent.left.height + 1: 1, (parent.right) ? parent.right.height + 1: 1);
+	node.height = Math.max((node.right) ? node.right.height + 1 : 1, node.left.height + 1);
+	node.updateParentHeights();
 };
 
 

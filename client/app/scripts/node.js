@@ -29,6 +29,8 @@ var Node = function(val) {
 	this.svg = '';	//correspondent svg group
 	this.edges = [];//drawn edges 
 	this.animationQueue = [];
+	this.visited = false;
+	this.isNew = true;
 
 };
 
@@ -69,48 +71,14 @@ Node.prototype.depth = function() {
 };
 
 /**
- * Function: translate
- * -------------------
- * Translates ONLY this node and animates.
- */
-Node.prototype.translate = function(dx, dy) {
-	console.log('test');
-
-	//
-	var transformString = 'translate(' + dx + ' ' + dy + ')';
-
-	this.enqueueAnimation({
-		duration: 2000,
-		transform: transformString
-	});
-
-	// this.svg
-	// .transition()
-	// .duration(2000)
-	// .attr('transform', transformString);
-
-	this.posX += dx;
-	this.posY += dy;
-};
-
-/**
- * Function: translate
- * -------------------
- * Translates this node to the new position.
- */
-Node.prototype.translateTo = function(xp, yp) {
-	//
-	this.translate(xp - this.posX, yp - this.posY);
-};
-
-/**
  * Function: visit
  * ---------------
  * 'Visits' the node, marking it visually.
  */
 Node.prototype.visit = function() {
+	this.visited = true;
 	this.svg.select('circle')
-		.attr('class', 'visited node');
+		.attr('class', 'node visited');
 };
 
 /**
@@ -119,6 +87,7 @@ Node.prototype.visit = function() {
  * 'Unvisits' the node, removing the marking.
  */
 Node.prototype.unvisit = function() {
+	this.visited = false;
 	this.svg.select('circle')
 		.attr('class', 'node');
 };
@@ -139,7 +108,11 @@ Node.prototype.updateLabel = function() {
  * ---------------
  * @param gs - the graph service
  */
-Node.prototype.draw = function(gs) {
+// Node.prototype.draw = function(gs) {
+// 	this.drawAtPosition(gs, this.oldX, this.oldY);
+// };
+
+Node.prototype.drawAtPosition = function(gs, px, py) {
 	var d3 = gs.d3;
 
 	//Remove old node from canvas.
@@ -152,54 +125,62 @@ Node.prototype.draw = function(gs) {
 	//Label svg element.
 	svg.attr('id', '#'+this.val);
 
+	var classString = 'node' + ((this.visited) ? ' visited' : '');
+
 	svg.append('circle')
-		.attr('cx', this.oldX)
-		.attr('cy', this.oldY)
+		.attr('cx', px)
+		.attr('cy', py)
 		.attr('r', this.radius)
-		.attr('class', 'node')
+		.attr('class', classString)
 		;
 	svg.append('text').text(this.val)
-		.attr('x', this.oldX)
-		.attr('y', this.oldY + 20)
+		.attr('x', px)
+		.attr('y', py + 20)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 50)
 		;
 	svg.append('text').attr('id', 'label')
-		.attr('x', this.oldX)
-		.attr('y', this.oldY + 50)
+		.attr('x', px)
+		.attr('y', py + 50)
 		.attr('text-anchor', 'middle')
 		.attr('font-size', 30)
 		;
 
-	var node = this;
-
-	var transformString = 'translate(' + (this.posX - this.oldX) + ' ' + (this.posY - this.oldY) + ')';
-
-	this.enqueueAnimation({
-		duration: 2000,
-		transform: transformString
-	});
 };
 
-var animationQueueCallback = function(node) {
+var animationQueueCallback = function(gs, node) {
+	//Pop the animation that just finished.
+	node.animationQueue.shift();
 	//If there are any outstanding animations, try.
 	if (node.animationQueue.length > 0) {
-		var animation = node.animationQueue.shift();
+		var animation = node.animationQueue[0];
+		this.drawAtPosition(gs, animation.oldX, animation.oldY);
+
 		node.svg.transition()
-		.duration(animation.duration)
-		.attr('transform', animation.transform)
-		.each('end', animationQueueCallback(node));
+			.duration(animation.duration)
+			.attr('transform', animation.transform)
+			.each('end', animationQueueCallback(node));
+
 	}
+	setTimeout(function() {
+		if (node.visited)
+			node.unvisit();
+	}, 2000);
 };
 
-Node.prototype.enqueueAnimation = function(animation) {
+Node.prototype.enqueueAnimation = function(gs, animation) {
+
 	this.animationQueue.push(animation);
 	//If no prior queued animations, just start immediately.
-	if (this.animationQueue.length == 1) {
+	if (this.animationQueue.length === 1) {
+		this.drawAtPosition(gs, animation.oldX, animation.oldY);
+		
 		this.svg.transition()
-		.duration(animation.duration)
-		.attr('transform', animation.transform)
-		.each('end', animationQueueCallback(this));
+			.duration(animation.duration)
+			.attr('transform', animation.transform)
+			.each('end', animationQueueCallback(gs, this));
+	}
+	else {
 	}
 };
 
@@ -296,12 +277,23 @@ Node.prototype.clearEdges = function() {
 
  	//Propagate heights upward.
  	this.height = 1;
- 	for (var parent = this.parentNode; parent; parent = parent.parentNode) {
- 		parent.height = Math.max((parent.left) ? parent.left.height + 1 : 0, (parent.right) ? parent.right.height + 1 : 0);
- 	}
+ 	this.updateParentHeights();
  };
 
 ANode.prototype = new Node();
+
+/**
+ *
+ */
+ ANode.prototype.updateHeight = function() {
+ 	this.height = Math.max((this.left) ? this.left.height + 1 : 1, (this.right) ? this.right.height + 1 : 1);
+ };
+
+ ANode.prototype.updateParentHeights = function() {
+ 	for (var parent = this.parentNode; parent; parent = parent.parentNode) {
+ 		parent.updateHeight();
+ 	}
+ };
 
 /**
  * Function: balanceFactor

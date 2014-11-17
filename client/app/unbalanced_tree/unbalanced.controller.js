@@ -53,7 +53,7 @@ angular.module('bstvisualizerApp')
 		var node = new UNode(value, gs);
 		node.posX = Math.random() * gs.width;
 		node.posY = Math.random() * gs.height;
-		node.draw(gs);
+		node.drawAtPosition(gs, node.posX, node.posY);
 
 		fixTree(gs.root, gs);
 

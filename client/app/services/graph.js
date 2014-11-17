@@ -21,18 +21,6 @@ var findParentNode = function(node, val) {
 };
 
 /**
- * Function: height
- * ----------------
- * Finds the height of the given node.
- */
- var height = function(node) {
- 	console.log(node.val);
- 	if (! node)
- 		return 0;
- 	return Math.max(1 + height(node.left), 1 + height(node.right));
- }
-
-/**
  * Function: clearNodes
  * --------------------
  * Purges all nodes from the graph
@@ -249,7 +237,17 @@ var drawNode = function(root, gs) {
 		var redraw = root.oldX != root.posX || root.oldY != root.posY;
 
 		if (redraw) {
-			root.draw(gs);
+			// root.draw(gs);
+			var transformString = 'translate(' + (root.posX - root.oldX) + ' ' + (root.posY - root.oldY) + ')';
+
+			root.enqueueAnimation(gs, {
+				oldX: root.oldX,
+				oldY: root.oldY,
+				posX: root.posX,
+				posY: root.posY,
+				duration: 1000,
+				transform: transformString,
+			});
 
 			//Clear edges.
 			root.clearEdges();
