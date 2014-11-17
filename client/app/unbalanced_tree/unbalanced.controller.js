@@ -13,8 +13,11 @@ angular.module('bstvisualizerApp')
 
 	gs.nodes = [];
 	gs.keys = [];
+
 	$scope.newNodeValue = '';
 	$scope.inputAlertActive = false;
+	$scope.history = '';
+
 	var nodeRadius = gs.radius;
 	var reg = gs.reg;
 
@@ -37,6 +40,7 @@ angular.module('bstvisualizerApp')
 		if (this.newNodeValue.toUpperCase() === 'CLEAR') {
 			clearAll(gs);
 			this.newNodeValue = '';
+			this.history = '';
 			return;
 		}
 
@@ -49,6 +53,8 @@ angular.module('bstvisualizerApp')
 			this.newNodeValue = '';
 			return;
 		}
+
+		this.history += value;
 
 		var node = new UNode(value, gs);
 		node.posX = Math.random() * gs.width;

@@ -14,8 +14,11 @@ angular.module('bstvisualizerApp')
 
 	gs.nodes = [];
 	gs.keys = [];
+	
 	$scope.newNodeValue = '';
 	$scope.inputAlertActive = false;
+	$scope.history = '';
+
 	var nodeRadius = gs.radius;
 	var reg = gs.reg;
 
@@ -43,14 +46,22 @@ angular.module('bstvisualizerApp')
 			return;
 		}
 
-		//Clear the board.
-		if (this.newNodeValue.toUpperCase() === 'CLEAR') {
-			clearAll(gs);
+		if (this.newNodeValue.toUpperCase() === 'FIX') {
+			properRebalanceAVL(node, gs);
+			fixTree(gs.root, gs);
 			this.newNodeValue = '';
 			return;
 		}
 
-		running = true;
+		//Clear the board.
+		if (this.newNodeValue.toUpperCase() === 'CLEAR') {
+			clearAll(gs);
+			this.newNodeValue = '';
+			this.history = '';
+			return;
+		}
+
+		// running = true;
 
 		//Disable warning message.
 		this.setInputAlert(false);
@@ -61,6 +72,8 @@ angular.module('bstvisualizerApp')
 			this.newNodeValue ='';
 			return;
 		}
+
+		this.history += value;
 
 		var node = new ANode(value, gs);
 		node.posX = Math.random() * gs.width;
@@ -75,7 +88,7 @@ angular.module('bstvisualizerApp')
 		this.newNodeValue = '';
 
 		//AVL Rebalance.
-		rebalanceAVL(node, gs);
+		if (! rebalanceAVL(node, gs)) {
 
 		//Fix layout again.
 		fixTree(gs.root, gs);
@@ -83,31 +96,22 @@ angular.module('bstvisualizerApp')
 		var ctrl = this;
 
 		//Update all the balance factor labels.
-		ctrl.updateNodeLabels(gs.nodes);
+		updateNodeLabels(gs.nodes);
+		}
 
-		setTimeout(function() {
-			rebalanceAVL(node, gs);
-			fixTree(gs.root, gs);
+		// setTimeout(function() {
+			// rebalanceAVL(node, gs);
+			// fixTree(gs.root, gs);
 
 			//Update all the balance factor labels.
-			ctrl.updateNodeLabels(gs.nodes);
+			// ctrl.updateNodeLabels(gs.nodes);
 
-			running = false;
+		// }, 2000);
 
-			ctrl.setInputAlert(false);
-		}, 2000);
-	};
-
-	/**
-	 * Function: updateNodeLabels
-	 * --------------------------
-	 * Update all of the node labels to reflect their balance factor.
-	 */
-	$scope.updateNodeLabels = function(nodes) {
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].label = 'Ht: ' + (nodes[i].height - 1) + ' Bal: ' + nodes[i].balanceFactor();
-			nodes[i].updateLabel();
-		}
+		// setTimeout(function() {
+			// running = false;
+		// 	ctrl.setInputAlert(false);
+		// }, 2000);
 	};
 
 	/**
@@ -117,14 +121,28 @@ angular.module('bstvisualizerApp')
 	 */
 	$scope.setInputAlert = function(state, text) {
 		if (state) {
+			angular.element('.input_alert').css('display', 'inline-block');
 			angular.element('.input_alert').css('opacity', '0.9');
 			$scope.alertText = text;
 		}
-		else
-			angular.element('.input_alert').css('opacity', '0');
+		else {
+			angular.element('.input_alert').css('display', 'none');
+		}
 	};
 
 }]);
+
+/**
+ * Function: updateNodeLabels
+ * --------------------------
+ * Update all of the node labels to reflect their balance factor.
+ */
+var updateNodeLabels = function(nodes) {
+	for (var i = 0; i < nodes.length; i++) {
+		nodes[i].label = 'Ht: ' + (nodes[i].height - 1) + ' Bal: ' + nodes[i].balanceFactor();
+		nodes[i].updateLabel();
+	}
+};
 
 /**
  * Function: rebalanceAVL
@@ -134,29 +152,52 @@ angular.module('bstvisualizerApp')
 var rebalanceAVL = function(node, gs) {
 	//Base case, end recursion.
 	if (! node)
-		return;
+		return false;
+
+	var shouldCallerWait = false;
 
 	//Lopsided to left.
 	if (node.balanceFactor() >= 2) {
 		//If the left side node is imbalanced to the right sightly, rotate left first.
 		if (node.left.balanceFactor() === -1) {
 			rotateLeft(node.left.right, gs);
-			return;
+			shouldCallerWait = true;
+
+			setTimeout(function() {
+				rotateRight(node.left, gs);
+				rebalanceAVL(node.left.parentNode, gs);
+				fixTree(gs.root, gs);
+				updateNodeLabels(gs.nodes);
+			}, 2000);
+			// return;
 		}
-		rotateRight(node.left, gs);
-		rebalanceAVL(node.left.parentNode, gs);
+		else {
+			rotateRight(node.left, gs);
+			rebalanceAVL(node.left.parentNode, gs);
+		}
 	}
 	else if (node.balanceFactor() <= -2) {
 		if (node.right.balanceFactor() === 1) {
 			rotateRight(node.right.left, gs);
-			return;
+			shouldCallerWait = true;
+			setTimeout(function() {
+				rotateLeft(node.right, gs);
+				rebalanceAVL(node.right.parentNode, gs);
+				fixTree(gs.root, gs);
+				updateNodeLabels(gs.nodes);
+			}, 2000);
+			// return;
 		}
-		rotateLeft(node.right, gs);
-		rebalanceAVL(node.right.parentNode, gs);
+		else {
+			rotateLeft(node.right, gs);
+			rebalanceAVL(node.right.parentNode, gs);
+		}
 	}
 	else
 		//Recurse upwards.
 		rebalanceAVL(node.parentNode, gs);
+
+	return shouldCallerWait;
 };
 
 /**

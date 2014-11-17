@@ -245,7 +245,7 @@ var drawNode = function(root, gs) {
 				oldY: root.oldY,
 				posX: root.posX,
 				posY: root.posY,
-				duration: 1500,
+				duration: 1000,
 				transform: transformString,
 			});
 

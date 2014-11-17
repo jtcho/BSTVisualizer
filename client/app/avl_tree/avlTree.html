@@ -1,17 +1,20 @@
 <div class="container text-center" id="graph_container">
 
 	<div class="row">
-		<alert type="danger" style="opacity:0.7">
-      		Notice: Incomplete. Please come back later!
-    	</alert>
 
+		<a href="http://en.wikipedia.org/wiki/AVL_tree">
 		<h1>AVL Binary Search Tree</h1>
+		</a>
 
 		<br>
+
+		<div id="warning_box">
 
 		<alert class="input_alert" type="warning" close="setInputAlert(false)" style="position: fixed;">
       		<strong>Error: </strong> {{alertText}}
     	</alert>
+
+    	</div>
 
 		<div class="col-lg-2"></div>
 
@@ -19,9 +22,11 @@
 
 	    <p>
 	    This visualization demonstrates how elements are added to an AVL binary search tree.
+	    The AVL tree was the first self-balancing binary search tree to be invented, in 1962!
+	    It operates under the invariant that given any node, its left and right subtrees can have a height difference no greater than one. If a node is inserted that violates this property, the tree auto-rotates to maintain both the BST ordering and the height invariant.
 	    </p>
 	    <p style="font-style: italic">
-	    Double-tap or mouse-scroll to zoom. Type 'clear' to reset.
+	    Double-tap or mouse-scroll to zoom. Type 'clear' to reset. <br>Caution, you are advised not to spam the text-box.
 	    </p>
 
 	    </div>
@@ -35,6 +40,10 @@
         <input type="submit" style="display: none;"/>
       </p>
     </form>
+
+    <p>
+    Input History: {{history}}
+    </p>
 
   </div>
 
