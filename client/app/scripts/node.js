@@ -344,14 +344,28 @@ var LNode = function(val, gs) {
 
 	this.class = 'red';
 	this.isRed = true;
+
+	this.colorQueue = [];
 };
 
 LNode.prototype = new Node();
 
-LNode.prototype.flipColor = function() {
-	this.isRed = ! this.isRed;
+LNode.prototype.setRed = function(red, delay) {
+	this.isRed = red;
 	this.class = (this.isRed) ? 'red' : 'black';
-	this.svg.select('circle').attr('class', this.getClassString());
+
+	this.colorQueue.push({classString: this.getClassString(), delay: delay });
+	colorQueueCallback(this, delay);
+};
+
+var colorQueueCallback = function(node) {
+	if (node.colorQueue.length >= 1) {
+		var queued = node.colorQueue.shift();
+		setTimeout(function() {
+			node.svg.select('circle').attr('class', queued.classString);
+			colorQueueCallback(node);
+		}, 1000);
+	}
 };
 
 /**

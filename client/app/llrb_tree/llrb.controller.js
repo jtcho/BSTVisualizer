@@ -63,9 +63,13 @@ angular.module('bstvisualizerApp')
 		//Fix layout.
 		fixTree(gs.root, gs);
 
-		// node.flipColor();
+		if (node === gs.root)
+			node.setRed(false);
 
 		//
+		rebalanceLLRB(node, gs);
+
+		fixTree(gs.root, gs);
 
 		gs.nodes.push(node);
 		gs.keys.push(value);
@@ -93,12 +97,118 @@ angular.module('bstvisualizerApp')
 /**
  * Function: rebalanceLLRB
  * -----------------------
- * Rebalances the LLRB tree.
+ * Rebalances the LLRB tree, from the bottom up.
  */
 var rebalanceLLRB = function(node, gs) {
+	if (! node || node === gs.root)
+		return;
 
+	// console.log('Checking ' + node.val +'.');
+
+	//If right leaning red node,
+	if (node.parentNode && node.parentNode.right === node && node.isRed) {
+		var oldParent = node.parentNode;
+		// console.log(node.val + ': Rightwards leaning red node.');
+
+		if (node.parentNode.left && node.parentNode.left.isRed) {
+			// console.log(node.val + ': Left sibling is red, too! Color flipping.');
+			
+			node.parentNode.left.setRed(false, 1);
+			node.parentNode.setRed(true, 4);
+			node.setRed(false, 1);
+		}
+		else {
+			// console.log(node.val + ': Rotating left.');
+			rotateLeft(node, gs);
+
+			rebalanceLLRB(node.left, gs);
+			return;
+		}
+	}
+
+	//If left leaning red node,
+	if (node.isRed && node.parentNode && node.parentNode != gs.root && node.parentNode.isRed) {
+		// console.log(node.val + ': Two reds in a row, rotating right.');
+		var parent = node.parentNode;
+		rotateRight(parent, gs);
+
+		//
+		if (node.isRed && parent.right.isRed) {
+			// console.log(node.val + ': Right sibling is red, too! Color flipping.');
+			node.setRed(false, 1);
+			parent.right.setRed(false, 1);
+			parent.setRed(true, 4);
+		}
+	}
+
+	rebalanceLLRB(node.parentNode, gs);
 };
 
+/**
+ * Function: rotateRight
+ * ---------------------
+ * Rotates a particular node to the right.
+ */
+var rotateRight = function(node, gs) {
+	// console.log('Rotating ' + node.val + ' right.');
+	node.visit();
+	var parent = node.parentNode;
+	node.parentNode = parent.parentNode;
+
+	if (node.parentNode) {
+		if (node.parentNode.left === parent)
+			node.parentNode.left = node;
+		else
+			node.parentNode.right = node;
+	}
+
+	//If the old parent was the root of the tree, update root.
+	if (parent === gs.root) {
+		gs.root = node;
+		// gs.root.setRed(false);
+	}
+
+	parent.left = node.right;
+	if (node.right)
+		node.right.parentNode = parent;
+	node.right = parent;
+	parent.parentNode = node;
+
+	node.setRed(parent.isRed, 2);
+	parent.setRed(true, 2);
+};
+
+/**
+ * Function: rotateLeft
+ * ---------------------
+ * Rotates a particular node to the left.
+ */
+var rotateLeft = function(node, gs) {
+	node.visit();
+	var parent = node.parentNode;
+	node.parentNode = parent.parentNode;
+
+	if (node.parentNode) {
+		if (node.parentNode.left === parent)
+			node.parentNode.left = node;
+		else
+			node.parentNode.right = node;
+	}
+
+	if (parent === gs.root) {
+		gs.root = node;
+		// gs.root.setRed(false);
+	}
+
+	parent.right = node.left;
+	if (node.left)
+		node.left.parentNode = parent;
+	node.left = parent;
+	parent.parentNode = node;
+
+	node.setRed(parent.isRed, 2);
+	parent.setRed(true, 2);
+};
 
 
 

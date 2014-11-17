@@ -38,13 +38,6 @@ p {
   stroke-width: 5px;
 }
 
-.node.visited {
-  stroke: #f9e470;
-  // stroke: #f00;
-  stroke-width: 10px;
-  // animation: fadein 1s ease 1;
-}
-
 .node.red {
   fill: #f9bcc6;
   stroke: #5a0c19;
@@ -55,6 +48,14 @@ p {
   fill: #bcb8b9;
   stroke: #323232;
   stroke-width: 5px;
+}
+
+//must go after all previous node styles
+.node.visited {
+  stroke: #f9e470;
+  // stroke: #f00;
+  stroke-width: 10px;
+  // animation: fadein 1s ease 1;
 }
 
 #overlay {
